@@ -8,8 +8,10 @@ import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.raysmond.artirest.MetricImp.GaugeImp;
 import com.raysmond.artirest.MetricImp.ProcessModelNumberImp;
+import com.raysmond.artirest.MetricImp.StateMetric;
+import com.raysmond.artirest.domain.*;
 import com.raysmond.artirest.domain.Process;
-import com.raysmond.artirest.domain.ProcessModel;
+import com.raysmond.artirest.repository.ArtifactModelRepository;
 import com.raysmond.artirest.repository.ProcessModelRepository;
 import com.raysmond.artirest.repository.ProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import springfox.documentation.RequestHandler;
 import javax.annotation.PostConstruct;
 import java.net.InetSocketAddress;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,19 +40,25 @@ public class InitialService {
     ProcessModelRepository processModelRepository;
 
     @Autowired
+    ArtifactModelRepository artifactModelRepository;
+
+    @Autowired
     MetricRegistry registry;
 
     public static Map<String,Integer> processNumberofModel = new LinkedHashMap<>();
+
+    public static StateMetric stateMetric;
 
     @PostConstruct
     public void initialmonitor(){
         Graphite graphite = new Graphite(new InetSocketAddress("10.141.209.192",2003));
 
+        //发送metric: 流程模型数量
         registry.register(name(InitialService.class,"ProcessModelNumberImp")
                         , new Gauge<Integer>(){
                 @Override
                 public Integer getValue(){
-                    return processModelRepository.findAll().size();
+                    return processModelRepository.findAll().size();  //从数据库取，数据库变了自然会跟着变
                 }
             });
         //System.out.println(number); //2
@@ -58,6 +67,7 @@ public class InitialService {
         List<Process> processes = processRepository.findAll();
 
 
+        //计算每个流程模型有多少流程实例，根据ID
         for (ProcessModel processModel : processModels) {
             processNumberofModel.put(processModel.getId(),0);
         }
@@ -87,7 +97,19 @@ public class InitialService {
 				.filter(MetricFilter.ALL)
 				.build(graphite);
 		// 设置每隔5秒钟，向Graphite中发送一次指标值
-		reporter.start(1, TimeUnit.SECONDS);
+		reporter.start(5, TimeUnit.SECONDS);
+
+		List<ArtifactModel> artifactModels = artifactModelRepository.findAll();
+
+		for(ProcessModel processModel : processModels){
+		    for(ArtifactModel artifactModel : processModel.artifacts){
+                for(StateModel state : artifactModel.states){
+                    String name = processModel.getId() + "." + artifactModel.getName() + "." + state.name;
+                    stateMetric = new StateMetric(artifactModel,state.name);
+                    registry.register(name,stateMetric);
+                }
+            }
+        }
     }
 
 }
