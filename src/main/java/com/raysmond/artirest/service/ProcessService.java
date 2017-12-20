@@ -1,19 +1,9 @@
 package com.raysmond.artirest.service;
 
-import com.raysmond.artirest.domain.Artifact;
-import com.raysmond.artirest.domain.ArtifactModel;
-import com.raysmond.artirest.domain.Attribute;
-import com.raysmond.artirest.domain.AttributeModel;
-import com.raysmond.artirest.domain.BusinessRuleModel;
+import com.raysmond.artirest.domain.*;
 import com.raysmond.artirest.domain.Process;
-import com.raysmond.artirest.domain.ProcessModel;
-import com.raysmond.artirest.domain.ServiceModel;
-import com.raysmond.artirest.domain.StateModel;
 import com.raysmond.artirest.domain.enumeration.ServiceType;
-import com.raysmond.artirest.repository.ArtifactModelRepository;
-import com.raysmond.artirest.repository.ArtifactRepository;
-import com.raysmond.artirest.repository.ProcessModelRepository;
-import com.raysmond.artirest.repository.ProcessRepository;
+import com.raysmond.artirest.repository.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +49,12 @@ public class ProcessService {
 
     @Autowired
     private LogService logService;
+
+    @Autowired
+    private FindService findService;
+
+    @Autowired
+    private StatisticModelRepository statisticModelRepository;
 
     public static final String CACHE_NAME = "artirest.process";
 
@@ -142,6 +138,17 @@ public class ProcessService {
         process.setProcessModel(model);
 
         processRepository.save(process);
+
+        //新加代码
+        //如果有流程新建，先将对应流程模型的开始状态的流程实例数量+1，加完存回数据库
+        StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
+        StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(model.getId());
+        String startState = findService.findStartState(process);
+        stateNumberOfModel.statenumber.put(startState, stateNumberOfModel.statenumber.get(startState) + 1);
+
+        statisticModelRepository.delete(model.getId());
+        statisticModelRepository.save(statisticModel);
+
         return process;
     }
 
@@ -481,6 +488,16 @@ public class ProcessService {
 
                         // comment here to enable cache
                         artifactRepository.save(artifact1);
+
+                        //新增代码
+                        //将数据库中 fromState实例数-1 , toState实例数+1
+                        StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
+                        StateNumberOfModel s = statisticModel.stateNumberOfModels.get(process.getProcessModel().getId());
+                        s.statenumber.put(transition.fromState, s.statenumber.get(transition.fromState) - 1);
+                        s.statenumber.put(transition.toState, s.statenumber.get(transition.toState) + 1);
+
+                        statisticModelRepository.delete(process.getProcessModel().getId());
+                        statisticModelRepository.save(statisticModel);
 
                         logService.stateTransition(process.getId(), artifact1.getId(), transition.fromState, transition.toState, service.name);
                     }

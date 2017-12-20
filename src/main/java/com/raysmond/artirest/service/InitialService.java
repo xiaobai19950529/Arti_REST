@@ -14,6 +14,7 @@ import com.raysmond.artirest.domain.Process;
 import com.raysmond.artirest.repository.ArtifactModelRepository;
 import com.raysmond.artirest.repository.ProcessModelRepository;
 import com.raysmond.artirest.repository.ProcessRepository;
+import com.raysmond.artirest.repository.StatisticModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springfox.documentation.RequestHandler;
@@ -44,6 +45,12 @@ public class InitialService {
 
     @Autowired
     MetricRegistry registry;
+
+    @Autowired
+    StatisticModelRepository statisticModelRepository;
+
+    @Autowired
+    FindService findService;
 
     public static Map<String,Integer> processNumberofModel = new LinkedHashMap<>();
 
@@ -101,15 +108,35 @@ public class InitialService {
 
 		List<ArtifactModel> artifactModels = artifactModelRepository.findAll();
 
-		for(ProcessModel processModel : processModels){
-		    for(ArtifactModel artifactModel : processModel.artifacts){
-                for(StateModel state : artifactModel.states){
-                    String name = processModel.getId() + "." + artifactModel.getName() + "." + state.name;
-                    stateMetric = new StateMetric(artifactModel,state.name);
-                    registry.register(name,stateMetric);
-                }
+		//计算每个流程模型中各个状态的流程实例数
+
+        StatisticModel statisticModel = findService.setStateNumber();
+        System.out.println(statisticModel.name);
+
+        for(String str : statisticModel.stateNumberOfModels.keySet()){
+            StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(str);
+            for(String state : stateNumberOfModel.statenumber.keySet()){
+                Integer number = stateNumberOfModel.statenumber.get(state);
+                String name = str + "." + state;
+                registry.register(name,new Gauge<Integer>(){
+                    @Override
+                    public Integer getValue() {
+                        return statisticModel.stateNumberOfModels.get(str).statenumber.get(state);
+                    }
+                });
             }
         }
+
+//		for(ProcessModel processModel : processModels){
+//		    findService.setStateNumber(processModel);
+//		    for(ArtifactModel artifactModel : processModel.artifacts){
+//                for(StateModel state : artifactModel.states){
+//                    String name = processModel.getId() + "." + artifactModel.getName() + "." + state.name;
+//                    stateMetric = new StateMetric(artifactModel,state.name);
+//                    registry.register(name,stateMetric);
+//                }
+//            }
+//        }
     }
 
 }

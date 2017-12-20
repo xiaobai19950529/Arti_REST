@@ -28,21 +28,26 @@ public class StateMetric implements Gauge<Integer> {
 
     public Integer metricValue(ArtifactModel artifactModel,String state){
         List<StateModel> states = new ArrayList<>();
+        Queue<StateModel> queue = new LinkedList<StateModel>();
         //找到开始状态
         StateModel startState = new StateModel();
         for(StateModel stateModel : artifactModel.states){
-            if(stateModel.type.equals("START")){
-                startState = stateModel;
+            if(stateModel.type == StateModel.StateType.START){
+                startState.name = stateModel.name;
+                startState.type = stateModel.type;
+                startState.nextStates = stateModel.nextStates;
+                startState.comment = stateModel.comment;
                 break;
             }
         }
+
         states.add(startState);
-        Queue<StateModel> queue = new LinkedList<>();
         //将开始状态添加进队列中
         queue.add(startState);
         while(!queue.isEmpty()){
-            StateModel statesearch = queue.element(); //取队头元素
-            queue.remove(); //移除队头
+            StateModel statesearch = queue.remove(); //移除并返回队头元素
+
+            System.out.println(statesearch.name);
             if(statesearch.type == StateModel.StateType.FINAL) continue;
 
             //将当前状态的nextStates都加入队列
@@ -51,13 +56,16 @@ public class StateMetric implements Gauge<Integer> {
                 {
                     if(s.name.equals(name)){ //如果找到了当前的状态
                         states.add(s);
+                        queue.add(s);
                         break;
                     }
                 }
             }
         }
 
+        System.out.println("状态的数量：" + states.size());
         int i = 0;
+
         for(StateModel stateModel : states){
             i++;
             if(stateModel.name.equals(state)){
