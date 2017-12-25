@@ -25,6 +25,9 @@ public class StatisticModel implements Serializable {
     @Field("name")
     public String name = "ArtiREST";
 
+    @Field("model_number")
+    public Integer modelnumber;
+
     @XmlElementWrapper(name = "stateNumberofModels")
     @XmlElement(name = "stateNumberofModel")
     public Map<String,StateNumberOfModel> stateNumberOfModels = new LinkedHashMap<String,StateNumberOfModel>(); //计算停留在每个状态上当前的流程数

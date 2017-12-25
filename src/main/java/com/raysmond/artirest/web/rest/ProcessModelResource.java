@@ -1,13 +1,14 @@
 package com.raysmond.artirest.web.rest;
 
+import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Timed;
-import com.raysmond.artirest.domain.ArtifactModel;
-import com.raysmond.artirest.domain.BusinessRuleModel;
-import com.raysmond.artirest.domain.ProcessModel;
-import com.raysmond.artirest.domain.ServiceModel;
+import com.raysmond.artirest.domain.*;
+import com.raysmond.artirest.repository.ProcessModelRepository;
+import com.raysmond.artirest.repository.StatisticModelRepository;
 import com.raysmond.artirest.service.ArtifactModelService;
 import com.raysmond.artirest.service.ProcessCreateService;
 import com.raysmond.artirest.service.ProcessModelService;
+import com.raysmond.artirest.service.StatisticModelService;
 import com.raysmond.artirest.web.rest.util.HeaderUtil;
 import com.raysmond.artirest.web.rest.util.PaginationUtil;
 
@@ -49,9 +50,15 @@ public class ProcessModelResource {
     @Autowired
     private ArtifactModelService artifactModelService;
 
+    @Autowired
+    private StatisticModelService statisticModelService;
+
+    @Autowired
+    private MetricRegistry registry;
     /**
      * POST  /processModels -> Create a new processModel.
      */
+
     @RequestMapping(value = "/processModels",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,6 +71,9 @@ public class ProcessModelResource {
         artifact.setName("Artifact");
         artifact = artifactModelService.save(artifact);
         processModel.artifacts.add(artifact);
+
+        statisticModelService.add_modelnumber(processModel);
+
         ProcessModel result = processModelService.save(processModel);
         return ResponseEntity.created(new URI("/api/processModels/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("processModel", result.getId().toString()))
@@ -155,10 +165,12 @@ public class ProcessModelResource {
         ProcessModel processModel = null;
 
         if (model != null && model.equals("loan")) {
-            processCreateService.createLoanProcessModel();
+            processModel = processCreateService.createLoanProcessModel();
         } else {
-            processCreateService.createOrderProcessModel();
+            processModel = processCreateService.createOrderProcessModel();
         }
+
+        statisticModelService.add_modelnumber(processModel);
 
         return Optional.ofNullable(processModel)
             .map(result -> new ResponseEntity<>(
@@ -176,6 +188,7 @@ public class ProcessModelResource {
     public ResponseEntity<Void> deleteProcessModel(@PathVariable String id) {
         log.debug("REST request to delete ProcessModel : {}", id);
         processModelService.delete(id);
+        statisticModelService.delete_modelnumber(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("processModel", id.toString())).build();
     }
 }

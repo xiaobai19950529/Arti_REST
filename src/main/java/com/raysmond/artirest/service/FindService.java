@@ -46,25 +46,26 @@ public class FindService {
     int j = 0;
 
     public StatisticModel setStateNumber(){
-        List<StatisticModel> statisticModels = statisticModelRepository.findAll();
 
         StatisticModel statisticModel;
-        if(statisticModels.size() == 0){
-            statisticModel = new StatisticModel();
+        if(statisticModelRepository.count() > 0){
+            //statisticModel = statisticModelRepository.findAll().get(0);
+            statisticModelRepository.deleteAll();
         }
-        else {
-            statisticModel = statisticModels.get(0);
-        }
+        statisticModel = new StatisticModel();
+
 
         //单artifact情况　1个流程模型里只有一个ArtifactModel
         List<ProcessModel> processModels = processModelRepository.findAll();
-
+        statisticModel.modelnumber = processModelRepository.findAll().size();
+        System.out.println(statisticModel.modelnumber);
         //初始化
         for(ProcessModel processModel : processModels) {
             StateNumberOfModel stateNumberOfModel = new StateNumberOfModel(); //新建一个对象
             statisticModel.stateNumberOfModels.put(processModel.getId(),stateNumberOfModel); //put进去
             stateNumberOfModel.processModelId = processModel.getId(); //设置值
             Map<String,Integer> m = new LinkedHashMap<String,Integer>();
+            stateNumberOfModel.processes = new LinkedHashSet<Process>();
             stateNumberOfModel.statenumber = m;
             for(ArtifactModel artifactModel : processModel.artifacts){
                 for(StateModel stateModel : artifactModel.states){
@@ -79,9 +80,14 @@ public class FindService {
             //statisticModel.stateNumberOfModels.put(processModel.getId(),stateNumberOfModel); //put进去
         }
 
-
         List<Process> processes = processRepository.findAll();
+        System.out.println(processes.size());
         for(Process process : processes){
+            String id = process.getProcessModel().getId();
+            if(processModels.contains(process.getProcessModel())){
+                statisticModel.stateNumberOfModels.get(id).processes.add(process);
+            }
+            else continue;
             Set<Artifact> artifacts = process.getArtifacts();
             if(artifacts.size() == 0){
                 StateNumberOfModel s = statisticModel.stateNumberOfModels.get(process.getProcessModel().getId());
@@ -96,6 +102,7 @@ public class FindService {
                     String state = artifact.getCurrentState();
                     StateNumberOfModel s = statisticModel.stateNumberOfModels.get(process.getProcessModel().getId());
                     s.instance++;
+
                     for (StateModel stateModel : artifact.getArtifactModel().states) {
                         if (stateModel.name.equals(state)) {
                             s.statenumber.put(stateModel.name, s.statenumber.get(stateModel.name) + 1);
@@ -127,6 +134,20 @@ public class FindService {
             return artifactModel.getStartState().name;
         }
         return null;
+    }
+
+    public List<String> findEndState(Process process){
+        Set<ArtifactModel> artifacts = process.getProcessModel().artifacts;
+        List<String> endStates = new LinkedList<String>();
+
+        for(ArtifactModel artifactModel : artifacts){
+            for(StateModel state : artifactModel.states){
+                if(state.type == StateModel.StateType.FINAL ){
+                    endStates.add(state.name);
+                }
+            }
+        }
+        return endStates;
     }
 //    public StatisticModel findStatisticModel(String artifactId, String processName,
 //                                             Map<String,StatisticModel> statisticModelcount, List<StateModel> list, Log log){

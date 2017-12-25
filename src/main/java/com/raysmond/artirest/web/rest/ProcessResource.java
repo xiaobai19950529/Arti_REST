@@ -6,10 +6,7 @@ import com.raysmond.artirest.domain.Artifact;
 import com.raysmond.artirest.domain.Process;
 import com.raysmond.artirest.domain.ProcessModel;
 import com.raysmond.artirest.domain.ServiceModel;
-import com.raysmond.artirest.service.ArtifactService;
-import com.raysmond.artirest.service.InitialService;
-import com.raysmond.artirest.service.ProcessModelService;
-import com.raysmond.artirest.service.ProcessService;
+import com.raysmond.artirest.service.*;
 import com.raysmond.artirest.web.rest.util.HeaderUtil;
 import com.raysmond.artirest.web.rest.util.PaginationUtil;
 
@@ -80,8 +77,6 @@ public class ProcessResource {
         ProcessModel processModel = processModelService.findOne(processModelId);
         Process result = processService.createProcessInstance(processModel);
 
-        //新加的代码
-        InitialService.processNumberofModel.put(processModelId,InitialService.processNumberofModel.get(processModelId)+1);
 
 
         return ResponseEntity.created(new URI("/api/processes/" + result.getId()))

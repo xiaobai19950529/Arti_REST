@@ -14,7 +14,7 @@ public class StateNumberOfModel {
 
     public Integer instance;
     public Integer pending;
-    public Integer running;
+    public Integer running;  //运行中的有多少个
     public Integer ended;
 
     public Set<Process> processes;

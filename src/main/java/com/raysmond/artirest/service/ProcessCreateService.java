@@ -5,6 +5,7 @@ import com.raysmond.artirest.domain.enumeration.Status;
 import com.raysmond.artirest.repository.ArtifactModelRepository;
 import com.raysmond.artirest.repository.ProcessModelRepository;
 
+import com.raysmond.artirest.repository.StatisticModelRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class ProcessCreateService {
 
     @Autowired
     private ProcessModelRepository processModelRepository;
+
+    @Autowired
+    private StatisticModelRepository statisticModelRepository;
 
 //    @PostConstruct
 //    private void init() {

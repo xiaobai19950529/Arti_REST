@@ -144,7 +144,12 @@ public class ProcessService {
         StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
         StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(model.getId());
         String startState = findService.findStartState(process);
+        System.out.println("开始状态:" + startState);
         stateNumberOfModel.statenumber.put(startState, stateNumberOfModel.statenumber.get(startState) + 1);
+        System.out.println("新建的流程id:" + process.getId());
+        stateNumberOfModel.processes.add(process);
+        stateNumberOfModel.instance++;
+        stateNumberOfModel.pending++;
 
         statisticModelRepository.delete(model.getId());
         statisticModelRepository.save(statisticModel);
@@ -495,8 +500,23 @@ public class ProcessService {
                         StateNumberOfModel s = statisticModel.stateNumberOfModels.get(process.getProcessModel().getId());
                         s.statenumber.put(transition.fromState, s.statenumber.get(transition.fromState) - 1);
                         s.statenumber.put(transition.toState, s.statenumber.get(transition.toState) + 1);
+                        //对实例数的改动
+                        String startState = findService.findStartState(process);
+                        List<String> endStates = findService.findEndState(process);
+                        if(transition.fromState.equals(startState) && !endStates.contains(transition.toState)){
+                            s.pending--;
+                            s.running++;
+                        }
+                        else if(!transition.fromState.equals(startState) && endStates.contains(transition.toState)){
+                            s.running--;
+                            s.ended++;
+                        }
+                        else if(transition.fromState.equals(startState) && endStates.contains(transition.toState)){
+                            s.pending--;
+                            s.ended++;
+                        }
 
-                        statisticModelRepository.delete(process.getProcessModel().getId());
+                        statisticModelRepository.delete(statisticModel.getId());
                         statisticModelRepository.save(statisticModel);
 
                         logService.stateTransition(process.getId(), artifact1.getId(), transition.fromState, transition.toState, service.name);
