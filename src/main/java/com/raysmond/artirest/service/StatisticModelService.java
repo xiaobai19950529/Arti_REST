@@ -1,5 +1,7 @@
 package com.raysmond.artirest.service;
 
+import com.codahale.metrics.Gauge;
+import com.codahale.metrics.MetricRegistry;
 import com.raysmond.artirest.domain.*;
 import com.raysmond.artirest.domain.Process;
 import com.raysmond.artirest.repository.ProcessModelRepository;
@@ -21,6 +23,9 @@ public class StatisticModelService {
 
     @Autowired
     private ProcessRepository processRepository;
+
+    @Autowired
+    MetricRegistry registry;
 
     public void add_modelnumber(ProcessModel processModel){
         StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
@@ -47,11 +52,66 @@ public class StatisticModelService {
 
         statisticModelRepository.delete(statisticModel.getId());
         statisticModelRepository.save(statisticModel);
+
+        for(String state : stateNumberOfModel.statenumber.keySet()){
+            String name1 = processModelId + "." + state;
+            registry.register(name1,new Gauge<Integer>(){
+                @Override
+                public Integer getValue() {
+                    return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).statenumber.get(state);
+                }
+            });
+        }
+        String count = processModelId + ".count";
+        registry.register(count, new Gauge<Integer>() {
+            @Override
+            public Integer getValue() {
+                return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).instance;
+            }
+        });
+        String pending = processModelId + ".pending";
+        registry.register(pending, new Gauge<Integer>() {
+            @Override
+            public Integer getValue() {
+                return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).pending;
+            }
+        });
+        String running = processModelId + ".running";
+        registry.register(running, new Gauge<Integer>() {
+            @Override
+            public Integer getValue() {
+                return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).running;
+            }
+        });
+        String ended = processModelId + ".ended";
+        registry.register(ended, new Gauge<Integer>() {
+            @Override
+            public Integer getValue() {
+                return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).instance;
+            }
+        });
     }
 
     public void delete_modelnumber(String processModelId){
         StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
         statisticModel.modelnumber--;
+
+        StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(processModelId);
+
+        //应移除提交相应流程模型的metric
+        for(String state : stateNumberOfModel.statenumber.keySet()){
+            String name1 = processModelId + "." + state;
+            registry.remove(name1);
+        }
+        String processModel_count = "processModel_count";
+        String count = processModelId + ".count";
+        String pending = processModelId + ".pending";
+        String running = processModelId + ".running";
+        String ended = processModelId + ".ended";
+        registry.remove(count);
+        registry.remove(pending);
+        registry.remove(running);
+        registry.remove(ended);
 
         processModelRepository.delete(processModelId); //先从流程模型表里删除该流程模型
         //当流程模型被删除时，也应删除属于其的流程实例
@@ -80,6 +140,9 @@ public class StatisticModelService {
 
         statisticModelRepository.delete(statisticModel.getId());
         statisticModelRepository.save(statisticModel);
+
+
+
 
     }
 

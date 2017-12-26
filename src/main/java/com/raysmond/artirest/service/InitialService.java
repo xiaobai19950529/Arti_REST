@@ -113,12 +113,11 @@ public class InitialService {
             StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(processModelId);
             for(String state : stateNumberOfModel.statenumber.keySet()){
                 String name1 = processModelId + "." + state;
-                System.out.println("孙八一");
+//                System.out.println("孙八一"); //只会输出一次
                 registry.register(name1,new Gauge<Integer>(){
                     @Override
                     public Integer getValue() {
-                        if(name1 == null) return null;
-                        System.out.println("name1:"  + name1 + "  processModelId" + processModelId);
+//                        System.out.println("name1:"  + name1 + "  processModelId" + processModelId); //每次都会输出
                         return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).statenumber.get(state);
                     }
                 });
@@ -156,8 +155,9 @@ public class InitialService {
         registry.register(processModel_count, new Gauge<Integer>() {
             @Override
             public Integer getValue() {
-                System.out.println(statisticModel.modelnumber);
-                return statisticModelRepository.findAll().get(0).modelnumber;
+                StatisticModel s = statisticModelRepository.findAll().get(0);
+                System.out.println(s.modelnumber); //输出流程模型数量
+                return s.modelnumber;
             }
         });
         GraphiteReporter reporter = forRegistry(registry)
