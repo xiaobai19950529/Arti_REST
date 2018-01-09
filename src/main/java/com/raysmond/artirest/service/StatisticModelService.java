@@ -8,6 +8,8 @@ import com.raysmond.artirest.repository.ProcessModelRepository;
 import com.raysmond.artirest.repository.ProcessRepository;
 import com.raysmond.artirest.repository.StatisticModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,6 +28,20 @@ public class StatisticModelService {
 
     @Autowired
     MetricRegistry registry;
+
+    /**
+     *  get all the statisticModels.
+     *  @return the list of entities
+     */
+    public List<StatisticModel> findAll() {
+        List<StatisticModel> statisticModels = statisticModelRepository.findAll();
+        return statisticModels;
+    }
+
+    public StatisticModel findById(String id){
+        StatisticModel statisticModel = statisticModelRepository.findOne(id);
+        return statisticModel;
+    }
 
     public void add_modelnumber(ProcessModel processModel){
         StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
