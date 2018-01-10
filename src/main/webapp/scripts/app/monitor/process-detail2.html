@@ -1,0 +1,104 @@
+
+<div>
+    <h2><span>Process</span> {{process.id}}</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th style="width: 150px;">Field</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <span>ID</span>
+                </td>
+                <td>
+                    <span class="form-control-static">{{process.id}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Name</span>
+                </td>
+                <td>
+                    <span class="form-control-static">{{process.name}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>IsRunning</span>
+                </td>
+                <td>
+                    <span class="form-control-static">{{process.isRunning}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>CreatedAt</span>
+                </td>
+                <td>
+                    <span class="form-control-static">{{process.createdAt | date:'medium'}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>UpdatedAt</span>
+                </td>
+                <td>
+                    <span class="form-control-static">{{process.updatedAt | date:'medium'}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Process model</td>
+                <td>
+                    <a href="/#/processModel/{{process.processModel.id}}">{{process.processModel.name}}</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-item artifact-list">
+            <div class="row">
+                <!--<div class="col-sm-12">-->
+                    <!-- <a class="btn btn-success" style="margin-right: 5px;" ng-repeat="artifact in instance.processModel.artifact" ng-click="createArtifact(artifact)">Create artifact ({{artifact.name}})</a> -->
+                    <!--<a ng-show="instance.artifacts.length == 0" class="btn btn-success" style="margin-right: 5px;" ng-click="createArtifact(instance.processModel.artifact[0])">Create artifact ({{instance.processModel.artifact[0].name}})</a>-->
+                <!--</div>-->
+                <div class="col-sm-12" >
+                    <div class="panel panel-default artifact">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{artifact.name || "Artifact"}}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-12" ng-repeat="artifact in process.artifacts">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">Artifact {{artifact.name}}</div>
+                                        <div class="panel-body artifact-instance">
+                                            <h3>Life cycle</h3>
+                                            <div id="myPalette-myDiagram-{{artifact.id}}" style="border: solid 1px #dedede; height: 200px; display: none;" ></div>
+                                            <div id="myDiagram-{{artifact.id}}" style="border: solid 1px #ddd; height: 300px;"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div ng-show="serviceResult" id="service-result">
+                                    <span>Service result</span>
+                                    <pre>{{serviceResult}}</pre>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

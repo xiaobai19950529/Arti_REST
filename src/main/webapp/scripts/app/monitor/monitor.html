@@ -1,0 +1,126 @@
+<div>
+    <div class="row monitor-sign">
+        <div class="col-md-3 sign">
+            <div class="outer-circle">
+                <div class="instance">
+                    <div class="inner-circle text-center">
+                        <span>
+                            {{instance}}
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="left-gap">
+                </div>
+            </div>
+
+            <h5 class="text-center">
+                Total Process Instances
+            </h5>
+        </div>
+
+        <div class="col-md-3 sign">
+            <div class="outer-circle">
+                <div class="running">
+                    <div class="inner-circle text-center">
+                        <span>
+                            {{running}}
+                        </span>
+                    </div>
+                </div>
+                <div class="left-gap">
+                </div>
+            </div>
+
+            <h5 class="text-center">
+                Running Process Instances
+            </h5>
+        </div>
+
+        <div class="col-md-3 sign">
+            <div class="outer-circle">
+                <div class="pending">
+                    <div class="inner-circle text-center">
+                        <span>
+                            {{pending}}
+                        </span>
+                    </div>
+                </div>
+                <div class="left-gap">
+                </div>
+            </div>
+
+            <h5 class="text-center">
+                Pending Process Instances
+            </h5>
+        </div>
+
+        <div class="col-md-3 sign">
+            <div class="outer-circle">
+                <div class="ended">
+                    <div class="inner-circle text-center">
+                        <span>
+                            {{ended}}
+                        </span>
+                    </div>
+                </div>
+                <div class="left-gap">
+                </div>
+            </div>
+
+            <h5 class="text-center">
+                Closed Process Instances
+            </h5>
+        </div>
+
+    </div>
+    <h2>
+        <div class="monitor-sign">
+            ProcessModels(
+                <span>
+                    {{processModelNumber}}
+                </span>
+            )
+        </div>
+    </h2>
+    <jh-alert></jh-alert>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
+                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span>Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createdAt"><span>CreatedAt</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updatedAt"><span>UpdatedAt</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr ng-repeat="processModel in processModels track by processModel.id">
+                    <td><a ui-sref="processModel.detail2({id:processModel.id})">{{processModel.id}}</a></td>
+                    <td>{{processModel.name}}</td>
+                    <td>
+                        <span ng-class="{'label label-default': processModel.status=='DESIGNING', 'label label-success': processModel.status=='ENACTED'}">{{processModel.status}}</span>
+
+                    </td>
+                    <td>{{processModel.createdAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                    <td>{{processModel.updatedAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                    <td>
+                        <button type="submit"
+                                ui-sref="processModel.detail2({id:processModel.id})"
+                                class="btn btn-info btn-sm">
+                            <span class="glyphicon glyphicon-eye-open"></span>&nbsp;<span> View</span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <uib-pagination class="pagination-sm" total-items="totalItems" ng-model="page" ng-change="loadAll()"></uib-pagination>
+    </div>
+</div>
