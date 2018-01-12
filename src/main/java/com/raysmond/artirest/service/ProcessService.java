@@ -495,28 +495,7 @@ public class ProcessService {
 
                         //新增代码
                         //将数据库中 fromState实例数-1 , toState实例数+1
-                        StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
-                        StateNumberOfModel s = statisticModel.stateNumberOfModels.get(process.getProcessModel().getId());
-                        s.statenumber.put(transition.fromState, s.statenumber.get(transition.fromState) - 1);
-                        s.statenumber.put(transition.toState, s.statenumber.get(transition.toState) + 1);
-                        //对实例数的改动
-                        String startState = findService.findStartState(process);
-                        List<String> endStates = findService.findEndState(process);
-                        if(transition.fromState.equals(startState) && !endStates.contains(transition.toState)){
-                            s.pending--;
-                            s.running++;
-                        }
-                        else if(!transition.fromState.equals(startState) && endStates.contains(transition.toState)){
-                            s.running--;
-                            s.ended++;
-                        }
-                        else if(transition.fromState.equals(startState) && endStates.contains(transition.toState)){
-                            s.pending--;
-                            s.ended++;
-                        }
-
-                        statisticModelRepository.delete(statisticModel.getId());
-                        statisticModelRepository.save(statisticModel);
+                        updateMetric(process,transition);
 
                         logService.stateTransition(process.getId(), artifact1.getId(), transition.fromState, transition.toState, service.name);
                     }
@@ -543,5 +522,33 @@ public class ProcessService {
         }
 
         return true;
+    }
+
+    /**
+     * If state transition happened, Update metric
+     */
+    public void updateMetric(Process process, BusinessRuleModel.Transition transition){
+        StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
+        StateNumberOfModel s = statisticModel.stateNumberOfModels.get(process.getProcessModel().getId());
+        s.statenumber.put(transition.fromState, s.statenumber.get(transition.fromState) - 1);
+        s.statenumber.put(transition.toState, s.statenumber.get(transition.toState) + 1);
+        //对实例数的改动
+        String startState = findService.findStartState(process);
+        List<String> endStates = findService.findEndState(process);
+        if(transition.fromState.equals(startState) && !endStates.contains(transition.toState)){
+            s.pending--;
+            s.running++;
+        }
+        else if(!transition.fromState.equals(startState) && endStates.contains(transition.toState)){
+            s.running--;
+            s.ended++;
+        }
+        else if(transition.fromState.equals(startState) && endStates.contains(transition.toState)){
+            s.pending--;
+            s.ended++;
+        }
+
+        statisticModelRepository.delete(statisticModel.getId());
+        statisticModelRepository.save(statisticModel);
     }
 }

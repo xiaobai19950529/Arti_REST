@@ -18,6 +18,8 @@ angular.module('artirestApp')
             $scope.stateNumberOfModel = stateNumberOfModels[processModelId];
             console.log($scope.stateNumberOfModel);
 
+            var start = $scope.stateNumberOfModel.statenumber["start"];
+            console.log("start: " + start);
         });
 
         $scope.load = function (id) {
@@ -121,10 +123,10 @@ angular.module('artirestApp')
         $scope.key = 0;
 
         $scope.addNode = function(nodes, edges, states, state, x, y, fromKey){ //递归函数
-            var
+            var num = $scope.stateNumberOfModel.statenumber[state["name"]];
             var node = {
                 "key" : $scope.key++,
-                "text" : state["comment"] + String($scope.stateNumberOfModel.statenumber[state["comment"]]),
+                "text" : state["comment"] + "(" + num + ")",
                 "loc" : "" + (x + 130) + " " + y
             };
 

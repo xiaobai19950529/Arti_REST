@@ -55,6 +55,8 @@ public class InitialService {
     @Autowired
     MetricsConfiguration metricsConfiguration;
 
+    @Autowired
+    MetricAddService metricAddService;
 
     @PostConstruct
     public void initialmonitor(){
@@ -107,49 +109,11 @@ public class InitialService {
         StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
         System.out.println(statisticModel1.name);
 
-        for(ProcessModel processModel : processModelRepository.findAll()){
-            if(processModel == null) continue;
+        for(ProcessModel processModel : processModelRepository.findAll()) {
+            if (processModel == null) continue;
             String processModelId = processModel.getId();
             StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(processModelId);
-            for(String state : stateNumberOfModel.statenumber.keySet()){
-                String name1 = processModelId + "." + state;
-//                System.out.println("孙八一"); //只会输出一次
-                registry.register(name1,new Gauge<Integer>(){
-                    @Override
-                    public Integer getValue() {
-//                        System.out.println("name1:"  + name1 + "  processModelId" + processModelId); //每次都会输出
-                        return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).statenumber.get(state);
-                    }
-                });
-            }
-            String count = processModelId + ".count";
-            registry.register(count, new Gauge<Integer>() {
-                @Override
-                public Integer getValue() {
-                    return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).instance;
-                }
-            });
-            String pending = processModelId + ".pending";
-            registry.register(pending, new Gauge<Integer>() {
-                @Override
-                public Integer getValue() {
-                    return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).pending;
-                }
-            });
-            String running = processModelId + ".running";
-            registry.register(running, new Gauge<Integer>() {
-                @Override
-                public Integer getValue() {
-                    return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).running;
-                }
-            });
-            String ended = processModelId + ".ended";
-            registry.register(ended, new Gauge<Integer>() {
-                @Override
-                public Integer getValue() {
-                    return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).instance;
-                }
-            });
+            metricAddService.addmetric(stateNumberOfModel,processModelId);
         }
         String processModel_count = "processModel_count";
         registry.register(processModel_count, new Gauge<Integer>() {

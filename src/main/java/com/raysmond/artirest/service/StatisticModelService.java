@@ -29,6 +29,9 @@ public class StatisticModelService {
     @Autowired
     MetricRegistry registry;
 
+    @Autowired
+    MetricAddService metricAddService;
+
     /**
      *  get all the statisticModels.
      *  @return the list of entities
@@ -69,43 +72,7 @@ public class StatisticModelService {
         statisticModelRepository.delete(statisticModel.getId());
         statisticModelRepository.save(statisticModel);
 
-        for(String state : stateNumberOfModel.statenumber.keySet()){
-            String name1 = processModelId + "." + state;
-            registry.register(name1,new Gauge<Integer>(){
-                @Override
-                public Integer getValue() {
-                    return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).statenumber.get(state);
-                }
-            });
-        }
-        String count = processModelId + ".count";
-        registry.register(count, new Gauge<Integer>() {
-            @Override
-            public Integer getValue() {
-                return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).instance;
-            }
-        });
-        String pending = processModelId + ".pending";
-        registry.register(pending, new Gauge<Integer>() {
-            @Override
-            public Integer getValue() {
-                return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).pending;
-            }
-        });
-        String running = processModelId + ".running";
-        registry.register(running, new Gauge<Integer>() {
-            @Override
-            public Integer getValue() {
-                return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).running;
-            }
-        });
-        String ended = processModelId + ".ended";
-        registry.register(ended, new Gauge<Integer>() {
-            @Override
-            public Integer getValue() {
-                return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).instance;
-            }
-        });
+        metricAddService.addmetric(stateNumberOfModel,processModelId);
     }
 
     public void delete_modelnumber(String processModelId){
