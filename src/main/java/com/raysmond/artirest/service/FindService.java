@@ -49,10 +49,11 @@ public class FindService {
 
         StatisticModel statisticModel;
         if(statisticModelRepository.count() > 0){
-            //statisticModel = statisticModelRepository.findAll().get(0);
-            statisticModelRepository.deleteAll();
+            statisticModel = statisticModelRepository.findAll().get(0);
+            //statisticModelRepository.deleteAll();
         }
-        statisticModel = new StatisticModel();
+        else
+            statisticModel = new StatisticModel();
 
 
         //单artifact情况　1个流程模型里只有一个ArtifactModel

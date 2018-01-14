@@ -72,6 +72,8 @@ public class ProcessModelResource {
         artifact = artifactModelService.save(artifact);
         processModel.artifacts.add(artifact);
 
+        processModel = processModelService.save(processModel);
+
         statisticModelService.add_modelnumber(processModel);
 
         ProcessModel result = processModelService.save(processModel);
@@ -187,7 +189,7 @@ public class ProcessModelResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteProcessModel(@PathVariable String id) {
         log.debug("REST request to delete ProcessModel : {}", id);
-        processModelService.delete(id);
+        //processModelService.delete(id);
         statisticModelService.delete_modelnumber(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("processModel", id.toString())).build();
     }

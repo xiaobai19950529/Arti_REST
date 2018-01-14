@@ -12,17 +12,16 @@ import com.raysmond.artirest.MetricImp.StateMetric;
 import com.raysmond.artirest.config.MetricsConfiguration;
 import com.raysmond.artirest.domain.*;
 import com.raysmond.artirest.domain.Process;
-import com.raysmond.artirest.repository.ArtifactModelRepository;
-import com.raysmond.artirest.repository.ProcessModelRepository;
-import com.raysmond.artirest.repository.ProcessRepository;
-import com.raysmond.artirest.repository.StatisticModelRepository;
+import com.raysmond.artirest.repository.*;
 import io.swagger.models.auth.In;
 import org.apache.tomcat.jni.Proc;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import springfox.documentation.RequestHandler;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.Id;
 import java.net.InetSocketAddress;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
@@ -48,6 +47,9 @@ public class InitialService {
 
     @Autowired
     StatisticModelRepository statisticModelRepository;
+
+    @Autowired
+    ArtifactRepository artifactRepository;
 
     @Autowired
     FindService findService;
@@ -100,11 +102,11 @@ public class InitialService {
 //            });
 //        }
 
+        dealwithConcurrent(); //处理并发问题，如果统计模型中有多余项，需先清除 （流程模型表里已经删除但统计模型中的StateNumberOfModels里还有此项，需删除）
 
 		List<ArtifactModel> artifactModels = artifactModelRepository.findAll();
 
 		//计算每个流程模型中各个状态的流程实例数
-
         StatisticModel statisticModel1 = findService.setStateNumber();
         StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
         System.out.println(statisticModel1.name);
@@ -135,4 +137,59 @@ public class InitialService {
 
     }
 
+    public void dealwithConcurrent(){
+        StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
+        List<ProcessModel> processModels = processModelRepository.findAll();
+        for(String processModelId : statisticModel.stateNumberOfModels.keySet()){
+            boolean flag = false;
+            for(ProcessModel processModel : processModels){
+                if(processModel.getId().equals(processModelId)){
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                statisticModel.stateNumberOfModels.remove(processModelId);
+            }
+        }
+        statisticModelRepository.save(statisticModel);
+
+        //处理ArtifactModel表的冗余
+//        List<ArtifactModel> artifactModels = artifactModelRepository.findAll();
+//        for(ArtifactModel artifactModel : artifactModels){
+//            boolean flag = false; //这个ArtifactModel在ProcessModel里没找到，应该被删除
+//            for(ProcessModel processModel : processModels){
+//                for(ArtifactModel artifact : processModel.artifacts){
+//                    if(artifact.getId().equals(artifactModel.getId())){
+//                        flag = true;
+//                        break;
+//                    }
+//                }
+//                if(flag) break;
+//            }
+//            if(!flag){
+//                artifactModelRepository.delete(artifactModel);
+//            }
+//        }
+
+        //处理Artifact表的冗余
+//        List<Artifact> artifacts = artifactRepository.findAll();
+//        List<Process> processes = processRepository.findAll();
+//
+//        for(Artifact artifact : artifacts){
+//            boolean flag = false;
+//            for(Process process : processes){
+//                for(Artifact artifact1 : process.getArtifacts()){
+//                    if(artifact.getId().equals(artifact1.getId())){
+//                        flag = true;
+//                        break;
+//                    }
+//                }
+//                if(flag) break;
+//            }
+//            if(!flag){
+//                artifactRepository.delete(artifact);
+//            }
+//        }
+    }
 }

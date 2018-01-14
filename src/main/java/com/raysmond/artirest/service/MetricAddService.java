@@ -20,6 +20,7 @@ public class MetricAddService {
     private MetricRegistry registry;
 
     public void addmetric(StateNumberOfModel stateNumberOfModel,String processModelId){
+
         for(String state : stateNumberOfModel.statenumber.keySet()){
             String name1 = processModelId + "." + state;
 //                System.out.println("孙八一"); //只会输出一次
