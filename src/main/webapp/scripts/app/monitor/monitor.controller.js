@@ -7,6 +7,7 @@ angular.module('artirestApp')
         $scope.predicate = 'id';
         $scope.reverse = false;
         $scope.page = 1;
+        $scope.ratio = 190;
 
         $scope.statisticModels = {};
 

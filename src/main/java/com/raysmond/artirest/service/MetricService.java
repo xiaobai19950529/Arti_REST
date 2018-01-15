@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MetricAddService {
+public class MetricService {
 
     @Autowired
     private StatisticModelRepository statisticModelRepository;
@@ -19,11 +19,10 @@ public class MetricAddService {
     @Autowired
     private MetricRegistry registry;
 
-    public void addmetric(StateNumberOfModel stateNumberOfModel,String processModelId){
+    public void addMetric(StateNumberOfModel stateNumberOfModel,String processModelId){
 
         for(String state : stateNumberOfModel.statenumber.keySet()){
-            String name1 = processModelId + "." + state;
-//                System.out.println("孙八一"); //只会输出一次
+            String name1 = processModelId + ".states." + state;
             registry.register(name1,new Gauge<Integer>(){
                 @Override
                 public Integer getValue() {
@@ -32,33 +31,52 @@ public class MetricAddService {
                 }
             });
         }
-        String count = processModelId + ".count";
+        String statistics = "statistics";
+        String count = processModelId + "." + statistics + ".count";
         registry.register(count, new Gauge<Integer>() {
             @Override
             public Integer getValue() {
                 return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).instance;
             }
         });
-        String pending = processModelId + ".pending";
+        String pending = processModelId + "." + statistics + ".pending";
         registry.register(pending, new Gauge<Integer>() {
             @Override
             public Integer getValue() {
                 return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).pending;
             }
         });
-        String running = processModelId + ".running";
+        String running = processModelId + "." + statistics + ".running";
         registry.register(running, new Gauge<Integer>() {
             @Override
             public Integer getValue() {
                 return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).running;
             }
         });
-        String ended = processModelId + ".ended";
+        String ended = processModelId + "." + statistics + ".ended";
         registry.register(ended, new Gauge<Integer>() {
             @Override
             public Integer getValue() {
                 return statisticModelRepository.findAll().get(0).stateNumberOfModels.get(processModelId).instance;
             }
         });
+    }
+
+    public void removeMetric(StateNumberOfModel stateNumberOfModel,String processModelId){
+        for(String state : stateNumberOfModel.statenumber.keySet()){
+            String name1 = processModelId + ".states." + state;
+            registry.remove(name1);
+        }
+
+//        String processModel_count = "processModel_count";
+        String statistics = "statistics";
+        String count = processModelId + "." + statistics + ".count";
+        String pending = processModelId + "." + statistics + ".pending";
+        String running = processModelId + "." + statistics + ".running";
+        String ended = processModelId + "." + statistics + ".ended";
+        registry.remove(count);
+        registry.remove(pending);
+        registry.remove(running);
+        registry.remove(ended);
     }
 }

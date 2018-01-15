@@ -74,10 +74,36 @@ angular.module('artirestApp')
             $http.get('/api/processModels/'+$scope.processModel.id+'/processes')
                 .then(function(res){
                     $scope.instances = res.data;
+                    console.log(res.data);
+                    console.log($scope.instances);
+                    for (var process_index in $scope.instances) {
+                        console.log("processName: ")
+                        console.log($scope.instances[process_index]);
+                        for (var artifact_index in $scope.instances[process_index].artifacts) {
+                            console.log("name = " + artifact_index);
+                            if ($scope.instances[process_index].artifacts == null) {
+                                $scope.instances[process_index].artifacts = "NULL";
+                            }
+                        }
+                    }
                 }, function(res){
 
                 });
         };
+
+        // $scope.instances.$promise.then(function(data) {
+        //     console.log("instances : " + $scope.instances);
+        //     for (var process in $scope.instances) {
+        //         console.log("processName: ")
+        //         console.log(process.name);
+        //         for (var artifact in process.artifacts) {
+        //             console.log("name = " + artifact.name);
+        //             if (artifact.currentState == null) {
+        //                 artifact.currentState = "NULL";
+        //             }
+        //         }
+        //     }
+        // });
 
         $scope.attrTypes = ['String','Long','Integer',"Double",'Float','Text','Date'];
 

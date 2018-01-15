@@ -1,33 +1,20 @@
 package com.raysmond.artirest.service;
 
 import com.codahale.metrics.Gauge;
-import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
-import com.raysmond.artirest.MetricImp.GaugeImp;
-import com.raysmond.artirest.MetricImp.ProcessModelNumberImp;
-import com.raysmond.artirest.MetricImp.StateMetric;
 import com.raysmond.artirest.config.MetricsConfiguration;
 import com.raysmond.artirest.domain.*;
 import com.raysmond.artirest.domain.Process;
 import com.raysmond.artirest.repository.*;
-import io.swagger.models.auth.In;
-import org.apache.tomcat.jni.Proc;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
-import springfox.documentation.RequestHandler;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.Id;
 import java.net.InetSocketAddress;
-import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.codahale.metrics.MetricRegistry.name;
@@ -58,7 +45,7 @@ public class InitialService {
     MetricsConfiguration metricsConfiguration;
 
     @Autowired
-    MetricAddService metricAddService;
+    MetricService metricService;
 
     @PostConstruct
     public void initialmonitor(){
@@ -115,7 +102,7 @@ public class InitialService {
             if (processModel == null) continue;
             String processModelId = processModel.getId();
             StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(processModelId);
-            metricAddService.addmetric(stateNumberOfModel,processModelId);
+            metricService.addMetric(stateNumberOfModel,processModelId);
         }
         String processModel_count = "processModel_count";
         registry.register(processModel_count, new Gauge<Integer>() {

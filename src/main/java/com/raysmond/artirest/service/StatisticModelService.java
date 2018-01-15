@@ -1,6 +1,5 @@
 package com.raysmond.artirest.service;
 
-import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.raysmond.artirest.domain.*;
 import com.raysmond.artirest.domain.Process;
@@ -9,8 +8,6 @@ import com.raysmond.artirest.repository.ProcessModelRepository;
 import com.raysmond.artirest.repository.ProcessRepository;
 import com.raysmond.artirest.repository.StatisticModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -40,7 +37,7 @@ public class StatisticModelService {
     MetricRegistry registry;
 
     @Autowired
-    MetricAddService metricAddService;
+    MetricService metricService;
 
     /**
      *  get all the statisticModels.
@@ -89,7 +86,7 @@ public class StatisticModelService {
 
 
 
-        metricAddService.addmetric(stateNumberOfModel,processModelId);
+        metricService.addMetric(stateNumberOfModel,processModelId);
     }
 
     public void delete_modelnumber(String processModelId){
@@ -99,20 +96,7 @@ public class StatisticModelService {
         StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(processModelId);
 
         //应移除提交相应流程模型的metric
-        for(String state : stateNumberOfModel.statenumber.keySet()){
-            String name1 = processModelId + "." + state;
-            registry.remove(name1);
-
-        }
-        String processModel_count = "processModel_count";
-        String count = processModelId + ".count";
-        String pending = processModelId + ".pending";
-        String running = processModelId + ".running";
-        String ended = processModelId + ".ended";
-        registry.remove(count);
-        registry.remove(pending);
-        registry.remove(running);
-        registry.remove(ended);
+        metricService.removeMetric(stateNumberOfModel,processModelId);
 
         //当流程模型被删除时，还应删除属于其的Artifact模型，将Artifact模型从对应的表中删掉
         //需要先删除artifactModel表里与该流程模型相关的项

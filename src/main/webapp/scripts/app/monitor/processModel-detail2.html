@@ -142,7 +142,7 @@
                 <div ng-show="processModel.status=='ENACTED'" class="panel-body">
                     <table class="table table-hover table-striped">
                         <thead>
-                        <th>ID</th>
+                        <th>Name</th>
                         <th>CurrentState</th>
                         <th>Artifacts</th>
                         <!-- <th>Is Running</th> -->
@@ -152,7 +152,12 @@
                         <tbody>
                         <tr ng-repeat="instance in instances | orderBy: 'createdAt': true">
                             <td>
-                                <a href="/#/process-monitor/{{instance.id}}">{{instance.id}}</a>
+                                <a href="/#/process-monitor/{{instance.id}}">{{instance.name}}-
+                                    <h6>{{instance.id}}</h6>
+                                </a>
+                            </td>
+                            <td ng-if="instance.artifacts.length==0">
+                                <span ng-class="'label label-success'">init</span>
                             </td>
                             <td ng-repeat="artifact in instance.artifacts">
                                 <span ng-class="'label label-success'">{{artifact.currentState}}</span>

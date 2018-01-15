@@ -15,7 +15,7 @@
         <table class="table table-striped">
             <thead>
                 <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
-                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <!--<th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>-->
                     <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span>Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="createdAt"><span>CreatedAt</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -25,8 +25,11 @@
             </thead>
             <tbody>
                 <tr ng-repeat="processModel in processModels track by processModel.id">
-                    <td><a ui-sref="processModel.detail({id:processModel.id})">{{processModel.id}}</a></td>
-                    <td>{{processModel.name}}</td>
+                    <!--<td><a ui-sref="processModel.detail({id:processModel.id})">{{processModel.id}}</a></td>-->
+                    <td><a ui-sref="processModel.detail({id:processModel.id})">{{processModel.name}}-
+                            <h5>{{processModel.id}}</h5>
+                        </a>
+                    </td>
                     <td>
                         <span ng-class="{'label label-default': processModel.status=='DESIGNING', 'label label-success': processModel.status=='ENACTED'}">{{processModel.status}}</span>
 
