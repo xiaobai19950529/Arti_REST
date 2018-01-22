@@ -2,6 +2,7 @@ package com.raysmond.artirest.domain;
 
 import java.time.ZonedDateTime;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -31,6 +32,9 @@ public class ProcessModel implements Serializable {
 
     @Field("name")
     private String name;
+
+    @Field("display_name")
+    private String display_name;
 
     @Field("comment")
     private String comment;
@@ -73,6 +77,14 @@ public class ProcessModel implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDisplay_name() {
+        return display_name;
+    }
+
+    public void setDisplay_name(String display_name) {
+        this.display_name = display_name;
     }
 
     public String getComment() {

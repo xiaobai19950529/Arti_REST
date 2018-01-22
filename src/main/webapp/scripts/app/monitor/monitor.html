@@ -2,17 +2,20 @@
     <div class="row monitor-sign">
         <div class="col-md-3 sign">
             <div class="outer-circle">
+                <div class="outer-circle-1" ng-style="{'animation-iteration-count': '{{ratio_instance}}'}"></div>
+                <div class="outer-circle-2" ng-style="{'animation-iteration-count': '{{ratio_instance}}'}"></div>
+                <div class="outer-circle-mask" ng-style="{'animation-iteration-count': '{{ratio_instance}}'}"></div>
+
                 <div class="instance">
                     <div class="inner-circle text-center">
                         <span>
                             {{instance}}
                         </span>
                     </div>
-
                 </div>
 
-                <div class="left-gap">
-                </div>
+                <!--<div class="left-gap">-->
+                <!--</div>-->
             </div>
 
             <h5 class="text-center">
@@ -22,9 +25,9 @@
 
         <div class="col-md-3 sign">
             <div class="outer-circle">
-                <div class="outer-circle-1" ng-style="{'transform': 'rotate({{ratio}}deg)'}"></div>
-                <div class="outer-circle-2" ng-class="ratio>180?'greater180':'less180'"></div>
-                <div class="outer-circle-mask" ng-class="ratio>180?'greater180':'less180'"></div>
+                <div class="outer-circle-1" ng-style="{'animation-iteration-count': '{{ratio_running}}'}"></div>
+                <div class="outer-circle-2" ng-style="{'animation-iteration-count': '{{ratio_running}}'}"></div>
+                <div class="outer-circle-mask" ng-style="{'animation-iteration-count': '{{ratio_running}}'}"></div>
 
                 <div class="running">
                     <div class="inner-circle text-center">
@@ -42,6 +45,10 @@
 
         <div class="col-md-3 sign">
             <div class="outer-circle">
+                <div class="outer-circle-1" ng-style="{'animation-iteration-count': '{{ratio_pending}}'}"></div>
+                <div class="outer-circle-2" ng-style="{'animation-iteration-count': '{{ratio_pending}}'}"></div>
+                <div class="outer-circle-mask" ng-style="{'animation-iteration-count': '{{ratio_pending}}'}"></div>
+
                 <div class="pending">
                     <div class="inner-circle text-center">
                         <span>
@@ -49,8 +56,8 @@
                         </span>
                     </div>
                 </div>
-                <div class="left-gap">
-                </div>
+                <!--<div class="left-gap">-->
+                <!--</div>-->
             </div>
 
             <h5 class="text-center">
@@ -60,6 +67,10 @@
 
         <div class="col-md-3 sign">
             <div class="outer-circle">
+                <div class="outer-circle-1" ng-style="{'animation-iteration-count': 'ratio_ended'}"></div>
+                <div class="outer-circle-2" ng-style="{'animation-iteration-count': 'ratio_ended'}"></div>
+                <div class="outer-circle-mask" ng-style="{'animation-iteration-count': 'ratio_ended'}"></div>
+
                 <div class="ended">
                     <div class="inner-circle text-center">
                         <span>
@@ -67,8 +78,8 @@
                         </span>
                     </div>
                 </div>
-                <div class="left-gap">
-                </div>
+                <!--<div class="left-gap">-->
+                <!--</div>-->
             </div>
 
             <h5 class="text-center">
@@ -92,7 +103,7 @@
         <table class="table table-striped">
             <thead>
                 <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
-                    <!--<th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>-->
+                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span>Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="createdAt"><span>CreatedAt</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -103,11 +114,10 @@
             <tbody>
 
                 <tr ng-repeat="processModel in processModels track by processModel.id">
-                    <!--<td><a ui-sref="processModel.detail2({id:processModel.id})">{{processModel.id}}</a></td>-->
-                    <td><a ui-sref="processModel.detail2({id:processModel.id})">{{processModel.name}}-<h6>{{processModel.id}}</h6></td>
+                    <td><a ui-sref="processModel.detail2({id:processModel.id})">{{$index + 1}}</a></td>
+                    <td><a ui-sref="processModel.detail2({id:processModel.id})">{{processModel.display_name}}</a></td>
                     <td>
                         <span ng-class="{'label label-default': processModel.status=='DESIGNING', 'label label-success': processModel.status=='ENACTED'}">{{processModel.status}}</span>
-
                     </td>
                     <td>{{processModel.createdAt | date:'yyyy-MM-dd HH:mm'}}</td>
                     <td>{{processModel.updatedAt | date:'yyyy-MM-dd HH:mm'}}</td>

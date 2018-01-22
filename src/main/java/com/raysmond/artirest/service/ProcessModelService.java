@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,5 +67,20 @@ public class ProcessModelService {
         log.debug("Request to delete ProcessModel : {}", id);
         ProcessModel processModel = processModelRepository.findOne(id);
         processModelRepository.delete(processModel);
+    }
+
+    public void modifyNameBeforeCreate(ProcessModel processModel){
+        List<ProcessModel> processModels = processModelRepository.findAll();
+        int id = 1;
+        if(processModel.getName() == null){
+            processModel.setName("小白大神");
+            System.out.println(processModel.getName());
+        }
+        for(ProcessModel model : processModels){
+            if(model.getName().equals(processModel.getName())){
+                id++;
+            }
+        }
+        processModel.setDisplay_name(processModel.getName() + "-" + id);
     }
 }

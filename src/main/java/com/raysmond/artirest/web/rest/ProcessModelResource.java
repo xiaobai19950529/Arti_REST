@@ -72,6 +72,7 @@ public class ProcessModelResource {
         artifact = artifactModelService.save(artifact);
         processModel.artifacts.add(artifact);
 
+        processModelService.modifyNameBeforeCreate(processModel); //修改名称，确保不重复
         processModel = processModelService.save(processModel);
 
         statisticModelService.add_modelnumber(processModel);

@@ -5,13 +5,10 @@ angular.module('artirestApp')
         $scope.processModel = entity;
         $scope.instances = {};
 
-        console.log(1111);
         $scope.load = function (id) {
             ProcessModel.get({id: id}, function(result) {
                 $scope.processModel = result;
-
-
-                console.log("processModel:" + $scope.processModel);
+                //console.log($scope.processModel);
                 //$timeout($scope.showStatesFlowcharts(), 1000);
                 setTimeout(function(){
                     $scope.showStatesFlowcharts();

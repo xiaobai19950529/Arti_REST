@@ -5,11 +5,11 @@ angular.module('artirestApp').controller('ProcessModelDialogController',
         function($scope, $stateParams, $uibModalInstance, entity, ProcessModel) {
 
         $scope.processModel = entity;
-        $scope.load = function(id) {
-            ProcessModel.get({id : id}, function(result) {
-                $scope.processModel = result;
-            });
-        };
+        // $scope.load = function(id) {
+        //     ProcessModel.get({id : id}, function(result) {
+        //         $scope.processModel = result;
+        //     });
+        // };
 
         var onSaveSuccess = function (result) {
             $scope.$emit('artirestApp:processModelUpdate', result);
@@ -23,10 +23,11 @@ angular.module('artirestApp').controller('ProcessModelDialogController',
 
         $scope.save = function () {
             $scope.isSaving = true;
+            console.log($scope.processModel.id);
             if ($scope.processModel.id != null) {
                 ProcessModel.update($scope.processModel, onSaveSuccess, onSaveError);
             } else {
-                ProcessModel.save($scope.processModel, onSaveSuccess, onSaveError);
+                ProcessModel.save($scope.processModel, onSaveSuccess, onSaveError); //有成功和失败之后做什么
             }
         };
 

@@ -26,10 +26,7 @@
             <tbody>
                 <tr ng-repeat="processModel in processModels track by processModel.id">
                     <!--<td><a ui-sref="processModel.detail({id:processModel.id})">{{processModel.id}}</a></td>-->
-                    <td><a ui-sref="processModel.detail({id:processModel.id})">{{processModel.name}}-
-                            <h5>{{processModel.id}}</h5>
-                        </a>
-                    </td>
+                    <td><a ui-sref="processModel.detail({id:processModel.id})">{{processModel.display_name}}</a></td>
                     <td>
                         <span ng-class="{'label label-default': processModel.status=='DESIGNING', 'label label-success': processModel.status=='ENACTED'}">{{processModel.status}}</span>
 

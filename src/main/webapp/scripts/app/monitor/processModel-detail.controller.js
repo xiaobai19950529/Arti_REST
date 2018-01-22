@@ -6,6 +6,8 @@ angular.module('artirestApp')
         $scope.instances = {};
         $scope.statisticModels = {};
 
+        $scope.ratio = 1;
+
         $scope.statisticModels = StatisticModelsService.findAll();
         console.log("statisticModels:");
         console.log($scope.statisticModels);
@@ -16,10 +18,16 @@ angular.module('artirestApp')
             var stateNumberOfModels = statisticModel.stateNumberOfModels;
             console.log(stateNumberOfModels);
             $scope.stateNumberOfModel = stateNumberOfModels[processModelId];
-            console.log($scope.stateNumberOfModel);
+             console.log($scope.stateNumberOfModel);
 
-            var start = $scope.stateNumberOfModel.statenumber["start"];
-            console.log("start: " + start);
+            var instances = $scope.stateNumberOfModel.instance;
+            console.log(instances);
+            console.log(stateNumberOfModels[processModelId].instances);
+            $scope.ratio_instance = 1;
+            $scope.ratio_running = stateNumberOfModels[processModelId].running / instances;
+            $scope.ratio_pending = stateNumberOfModels[processModelId].pending / instances;
+            $scope.ratio_ended = stateNumberOfModels[processModelId].ended / instances;
+            console.log($scope.ratio_running / $scope.ratio_pending);
         });
 
         $scope.load = function (id) {
@@ -32,7 +40,6 @@ angular.module('artirestApp')
 
                 $scope.loadInstances(); //从后台加载实例
             });
-
 
         };
 
@@ -74,13 +81,13 @@ angular.module('artirestApp')
             $http.get('/api/processModels/'+$scope.processModel.id+'/processes')
                 .then(function(res){
                     $scope.instances = res.data;
-                    console.log(res.data);
-                    console.log($scope.instances);
+                    // console.log(res.data);
+                    // console.log($scope.instances);
                     for (var process_index in $scope.instances) {
-                        console.log("processName: ")
-                        console.log($scope.instances[process_index]);
+                        // console.log("processName: ")
+                        // console.log($scope.instances[process_index]);
                         for (var artifact_index in $scope.instances[process_index].artifacts) {
-                            console.log("name = " + artifact_index);
+                            // console.log("name = " + artifact_index);
                             if ($scope.instances[process_index].artifacts == null) {
                                 $scope.instances[process_index].artifacts = "NULL";
                             }

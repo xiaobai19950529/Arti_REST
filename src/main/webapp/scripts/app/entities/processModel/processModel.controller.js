@@ -37,4 +37,7 @@ angular.module('artirestApp')
                 id: null
             };
         };
+
+        $scope.getDisplayName = function(model) {
+        };
     });

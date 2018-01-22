@@ -30,6 +30,9 @@ public class ProcessCreateService {
     @Autowired
     private StatisticModelRepository statisticModelRepository;
 
+    @Autowired
+    private ProcessModelService processModelService;
+
 //    @PostConstruct
 //    private void init() {
 //        if (processModelRepository.count() == 0) {
@@ -197,6 +200,7 @@ public class ProcessCreateService {
 
         model.businessRules.add(rule3);
 
+        processModelService.modifyNameBeforeCreate(model); //修改名称，确保不重复
         processModelRepository.save(model);
 
         return model;

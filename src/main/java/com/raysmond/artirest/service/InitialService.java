@@ -127,6 +127,7 @@ public class InitialService {
     public void dealwithConcurrent(){
         StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
         List<ProcessModel> processModels = processModelRepository.findAll();
+
         for(String processModelId : statisticModel.stateNumberOfModels.keySet()){
             boolean flag = false;
             for(ProcessModel processModel : processModels){
@@ -140,6 +141,26 @@ public class InitialService {
             }
         }
         statisticModelRepository.save(statisticModel);
+
+
+        for(int i = 0; i < processModels.size(); i++){
+            int id = 1;
+            for(int j = 0; j < i; j++){
+                if(processModels.get(i).getName().equals(processModels.get(j).getName())){
+                    id++;
+                }
+            }
+            processModels.get(i).setDisplay_name(processModels.get(i).getName() + "-" + id);
+        }
+        processModelRepository.save(processModels);
+
+        //处理Process表的冗余
+        List<Process> processes = processRepository.findAll();
+        for(Process process : processes){
+            if(process.getProcessModel() == null){
+                processRepository.delete(process);
+            }
+        }
 
         //处理ArtifactModel表的冗余
 //        List<ArtifactModel> artifactModels = artifactModelRepository.findAll();
