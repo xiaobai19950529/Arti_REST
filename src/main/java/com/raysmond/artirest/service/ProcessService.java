@@ -132,9 +132,9 @@ public class ProcessService {
         return services;
     }
 
-    public Process createProcessInstance(ProcessModel model) {
+    public Process createProcessInstance(ProcessModel model,String customerName) {
         Process process = new Process();
-        process.setName(model.getName());
+        process.setName(model.getName()+"-"+customerName);
         process.setProcessModel(model);
         processRepository.save(process);
 

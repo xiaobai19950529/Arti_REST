@@ -94,18 +94,23 @@ angular.module('artirestApp')
         };
 
         $scope.isServiceParam = function(service, attribute_name){
+            //console.log(service.inputParams.indexOf(attribute_name));
             return service.inputParams.indexOf(attribute_name) >= 0;
         };
 
         $scope.showService = function(service){
             $scope.currentService = service;
+            console.log("service:" + service);
 
             var artifact = findProcessArtifact(service.inputArtifact);
-
+            console.log(artifact);
             if (artifact != undefined){
                 $scope.currentArtifactForService = artifact;
+                console.log("artifact is not undefined!");
             } else {
+                console.log("artifact is undefined!");
                 $scope.currentArtifactForService = initArtifact(service.inputArtifact);
+                console.log($scope.currentArtifactForService);
             }
 
 

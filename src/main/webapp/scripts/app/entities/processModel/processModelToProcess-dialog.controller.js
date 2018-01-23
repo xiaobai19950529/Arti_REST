@@ -10,10 +10,6 @@ angular.module('artirestApp').controller('ProcessModelToProcessDialogController'
             $scope.load = function(id) {
                 ProcessModel.get({id: id}, function(result) {
                     $scope.processModel = result;
-
-                    //$timeout($scope.showStatesFlowcharts(), 1000);
-
-                    //$scope.loadInstances(); //从后台加载实例
                 });
             };
 
@@ -29,30 +25,21 @@ angular.module('artirestApp').controller('ProcessModelToProcessDialogController'
                 $scope.isSaving = false;
             };
 
-            // $scope.loadInstances = function(){
-            //     $http.get('/api/processModels/'+$scope.processModel.id+'/processes') //从后台ProcessResource拿数据
-            //         .then(function(res){
-            //             $scope.instances = res.data;
-            //         }, function(res){
-            //
-            //         });
-            // };
-
-
             $scope.save = function () {
                 $scope.isSaving = true;
                 if ($scope.process.id != null) {
-                    Process.update($scope.process, onSaveSuccess, onSaveError);
+                    //Process.update($scope.process, onSaveSuccess, onSaveError);
                 } else {
-                    Process.save($scope.process, onSaveSuccess, onSaveError);
-                    console.log($scope.processModel);
-                    // $http.post('/api/processModels/'+$scope.processModel.id+'/processes', {})
-                    //     .then(function(res){
-                    //         $scope.loadInstances();
-                    //     }, function(res){
-                    //
-                    //     });
-                    // $scope.loadInstances();
+                    //Process.save($scope.process, onSaveSuccess, onSaveError);
+                    //console.log($scope.processModel);
+                    $http.post('/api/processModels/'+$scope.processModel.id+'/processes',{"name":$scope.customerName})
+                        .then(function(res){
+                            $scope.$emit('artirestApp:processUpdate', res);
+                            $uibModalInstance.close(res);
+                            $scope.isSaving = false;
+                        }, function(res){
+
+                        });
                 }
             };
 

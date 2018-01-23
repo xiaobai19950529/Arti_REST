@@ -4,30 +4,27 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="clear()">&times;</button>
-        <h4 class="modal-title" id="myProcessLabel">Create or edit a Process</h4>
+        <h4 class="modal-title" id="myProcessLabel">Create a Process</h4>
     </div>
     <div class="modal-body">
         <jh-alert-error></jh-alert-error>
         <div class="form-group">
-            <label class="control-label" for="field_name">Name</label>
-            <input type="text" class=" " name="name" id="field_name" ng-model="name" required/>
+            <label class="control-label" for="field_name">Customer Name:</label>
+            <input type="text" class=" " name="customerName" id="field_name" ng-model="customerName" required/>
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_name">ProcessModel</label>
-            <span type="text" class=" " name="name" id="field_processModel"
-                   ng-model="processModel.name" readonly>
-                    {{processModel.name}}
+            <label class="control-label" for="field_name">ProcessModel:&nbsp&nbsp&nbsp&nbsp</label>
+            <span type="text" class=" " name="display_name" id="field_processModel"
+                   ng-model="display_name" readonly>
+                    {{processModel.display_name}}
             </span>
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="test()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Test</span>
-        </button>
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Cancel</span>
         </button>
-        <button type="submit" ng-disabled="editForm1.name.$invalid || isSaving" class="btn btn-primary">
+        <button type="submit" ng-disabled="editForm1.customerName.$invalid || isSaving" class="btn btn-primary">
             <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
         </button>
     </div>

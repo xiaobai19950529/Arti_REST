@@ -132,19 +132,19 @@ angular.module('artirestApp')
                         resolve: {
                             entity: function () {
                                 return {
-                                    name: null,
-                                    isRunning: null,
-                                    createdAt: null,
-                                    updatedAt: null,
-                                    id: null
+                                    // name: null,
+                                    // isRunning: null,
+                                    // createdAt: null,
+                                    // updatedAt: null,
+                                    //id: null
                                 };
                             }
                         }
                     }).result.then(function(result) {
-                        console.log("哈哈");
+                        //console.log("哈哈");
                         $state.go('processModel.detail', null, { reload: true });
                     }, function() {
-                        console.log("呵呵");
+                        //console.log("呵呵");
                         $state.go('processModel.detail');
                     })
                 }]
