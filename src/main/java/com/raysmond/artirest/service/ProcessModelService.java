@@ -71,16 +71,18 @@ public class ProcessModelService {
 
     public void modifyNameBeforeCreate(ProcessModel processModel){
         List<ProcessModel> processModels = processModelRepository.findAll();
-        int id = 1;
+        ProcessModel end_model = null;  //按时间排序后同名的最后一个流程模型； 数据库本身是按照创建时间排序的
         if(processModel.getName() == null){
             processModel.setName("小白大神");
             System.out.println(processModel.getName());
         }
         for(ProcessModel model : processModels){
             if(model.getName().equals(processModel.getName())){
-                id++;
+                end_model = model;
             }
         }
-        processModel.setDisplay_name(processModel.getName() + "-" + id);
+        if(end_model == null) processModel.setNum(1);
+        else processModel.setNum(end_model.getNum() + 1);
+        processModel.setDisplay_name(processModel.getName() + "-" + processModel.getNum());
     }
 }

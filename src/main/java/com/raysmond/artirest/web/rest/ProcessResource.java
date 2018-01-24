@@ -68,8 +68,7 @@ public class ProcessResource {
     public ResponseEntity<Process> createProcessFromModel(
         @PathVariable(value = "id") String processModelId,
         @RequestBody Process process) throws URISyntaxException {
-        System.out.println(process);
-        System.out.println("八一:" + process.getName());
+
         log.debug("REST request to save Process : {}", process);
         if (process.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("process", "idexists", "A new process cannot already have an ID")).body(null);

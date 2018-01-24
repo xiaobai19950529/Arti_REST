@@ -74,6 +74,8 @@ public class ProcessCreateService {
         artifact.states.add(canceled);
         artifact.states.add(confirmed);
 
+        artifact.endStates = artifact.getEndState();
+
         artifactModelRepository.save(artifact);
 
         ProcessModel model = new ProcessModel();

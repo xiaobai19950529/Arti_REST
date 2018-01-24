@@ -27,6 +27,9 @@ public class Process implements Serializable {
     @Field("name")
     private String name;
 
+    @Field("customerName")
+    private String customerName;
+
     @Field("is_running")
     private Boolean isRunning;
 
@@ -61,6 +64,14 @@ public class Process implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public Boolean getIsRunning() {

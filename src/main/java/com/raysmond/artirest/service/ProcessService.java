@@ -115,6 +115,11 @@ public class ProcessService {
     @CacheEvict(CACHE_NAME)
     public void delete(String id) {
         log.debug("Request to delete Process : {}", id);
+        //删除流程同时需要删除该流程下的artifact from artifact表
+        Process process = processRepository.findOne(id);
+        for(Artifact artifact : process.getArtifacts()){
+            artifactRepository.delete(artifact);
+        }
         processRepository.delete(id);
     }
 
@@ -136,6 +141,8 @@ public class ProcessService {
         Process process = new Process();
         process.setName(model.getName()+"-"+customerName);
         process.setProcessModel(model);
+        process.setCustomerName(customerName);
+        process.setIsRunning(false);
         processRepository.save(process);
 
         //新加代码
@@ -467,6 +474,7 @@ public class ProcessService {
 
         if (firstRuleSatisfied != null) {
             doTransitions(process, firstRuleSatisfied, service);
+
         }
 
         // 后置条件没有计算, 问题:
@@ -493,6 +501,21 @@ public class ProcessService {
                         // comment here to enable cache
                         artifactRepository.save(artifact1);
 
+                        ArtifactModel artifactModel = new ArtifactModel();
+                        for(ArtifactModel artifact : process.getProcessModel().artifacts){
+                            artifactModel = artifact; //取最后一个
+                        }
+                        boolean flag = false;
+                        for(StateModel endState : artifactModel.endStates){
+                            System.out.println(endState.name + "==" + transition.toState);
+                            if(endState.name.equals(transition.toState)){
+                                process.setIsRunning(false);
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if(!flag) process.setIsRunning(true);
+                        processRepository.save(process);
                         //新增代码
                         //将数据库中 fromState实例数-1 , toState实例数+1
                         updateMetric(process,transition);

@@ -1,9 +1,25 @@
 'use strict';
 
 angular.module('artirestApp')
-    .controller('ProcessModelDetailController', function ($scope, $rootScope, $state, $stateParams, $timeout, $http, $uibModal, entity, ProcessModel,ArtifactModel, Process) {
+    .controller('ProcessModelDetailController', function ($scope, $rootScope, $state, $stateParams, $timeout, $http, $uibModal, ParseLinks, entity, ProcessModel,ArtifactModel, Process, ProcessOfModel) {
         $scope.processModel = entity;
+        $scope.processes = {}
         $scope.instances = {};
+        $scope.predicate = 'createdAt';
+        $scope.reverse = false;
+        $scope.page = 1;
+        $scope.loadAll = function(id) {
+            console.log(id);
+            ProcessOfModel.query({page: $scope.page - 1, size: 10, sort: [$scope.predicate + ',' + ($scope.reverse ? 'asc' : 'desc')]}, function(result, headers) {
+                $scope.links = ParseLinks.parse(headers('link'));
+                $scope.totalItems = headers('X-Total-Count');
+                $scope.processes = result;
+                console.log(result);
+                console.log($scope.links);
+                console.log("哈哈");
+                console.log($scope.totalItems);
+            });
+        };
 
         $scope.load = function (id) {
             ProcessModel.get({id: id}, function(result) {
@@ -12,13 +28,21 @@ angular.module('artirestApp')
                 //$timeout($scope.showStatesFlowcharts(), 1000);
                 setTimeout(function(){
                     $scope.showStatesFlowcharts();
-                }, 1000);
+                }, 1);
 
                 $scope.loadInstances(); //从后台加载实例
             });
         };
 
+
         $scope.load($stateParams.id);
+        //$scope.loadAll($stateParams.id);
+
+        $scope.deleteInstance = function (id) {
+            Process.delete({id: id}, function (result) {
+                $scope.loadInstances();
+            });
+        };
 
         $scope.parseLifeCycle = function(artifact){
             var key = 'myDiagram-'+artifact.id;

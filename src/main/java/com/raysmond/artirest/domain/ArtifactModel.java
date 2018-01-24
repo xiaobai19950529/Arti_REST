@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.swing.plaf.nimbus.State;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
@@ -47,6 +48,8 @@ public class ArtifactModel implements Serializable {
     @XmlElement(name = "state")
     public Set<StateModel> states = new HashSet<>();
 
+    public Set<StateModel> endStates = new HashSet<>();
+
     @XmlTransient
     @JsonIgnore
     public StateModel getStartState() {
@@ -57,6 +60,20 @@ public class ArtifactModel implements Serializable {
         }
 
         return null;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Set<StateModel> getEndState() {
+        Set<StateModel> stateModels = new HashSet<>();
+        for (StateModel state : this.states) {
+            if (state.type == StateModel.StateType.FINAL) {
+                stateModels.add(state);
+            }
+        }
+        if(stateModels.size() == 0)
+            return null;
+        return stateModels;
     }
 
     public String getId() {

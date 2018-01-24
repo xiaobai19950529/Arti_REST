@@ -95,15 +95,15 @@ public class StatisticModelService {
 
         StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(processModelId);
 
-        //应移除提交相应流程模型的metric
-        metricService.removeMetric(stateNumberOfModel,processModelId);
-
         //当流程模型被删除时，还应删除属于其的Artifact模型，将Artifact模型从对应的表中删掉
         //需要先删除artifactModel表里与该流程模型相关的项
         ProcessModel processModel = processModelService.findOne(processModelId);
         for (ArtifactModel artifact : processModel.artifacts){
             artifactModelService.delete(artifact.getId());
         }
+
+        //应移除提交相应流程模型的metric
+        metricService.removeMetric(stateNumberOfModel,processModelId);
 
         processModelRepository.delete(processModelId); //先从流程模型表里删除该流程模型
         //当流程模型被删除时，也应删除属于其的流程实例

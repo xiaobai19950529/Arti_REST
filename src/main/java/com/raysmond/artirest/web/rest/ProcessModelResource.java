@@ -69,6 +69,7 @@ public class ProcessModelResource {
         }
         ArtifactModel artifact = new ArtifactModel();
         artifact.setName("Artifact");
+        artifact.endStates = artifact.getEndState();
         artifact = artifactModelService.save(artifact);
         processModel.artifacts.add(artifact);
 

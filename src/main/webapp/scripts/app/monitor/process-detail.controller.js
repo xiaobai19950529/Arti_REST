@@ -118,7 +118,6 @@ angular.module('artirestApp')
             $http.post(url, $scope.currentArtifactForService)
                 .then(function(res){
                     console.log(res);
-
                     $scope.refresh();
                     $scope.currentService = undefined;
                     $scope.currentArtifactForService = undefined;

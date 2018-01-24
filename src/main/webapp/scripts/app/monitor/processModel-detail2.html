@@ -165,10 +165,10 @@
                         <tr ng-repeat="instance in instances | orderBy: 'createdAt': true">
                             <td>
                                 <a href="/#/process-monitor/{{instance.id}}">{{instance.name}}-
-                                    <h6>{{instance.id}}</h6>
+                                    {{ instance.createdAt | date:'yyyy-MM-dd HH:mm' }}
                                 </a>
                             </td>
-                            <td ng-if="instance.artifacts.length==0">
+                            <td ng-if="instance.artifacts.length == 0">
                                 <span ng-class="'label label-success'">init</span>
                             </td>
                             <td ng-repeat="artifact in instance.artifacts">

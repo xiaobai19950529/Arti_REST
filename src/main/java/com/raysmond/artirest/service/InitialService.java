@@ -144,13 +144,17 @@ public class InitialService {
 
 
         for(int i = 0; i < processModels.size(); i++){
-            int id = 1;
+            int id = 0;
+            boolean flag = true; //名字唯一
             for(int j = 0; j < i; j++){
                 if(processModels.get(i).getName().equals(processModels.get(j).getName())){
-                    id++;
+                    flag = false; //有同名
+                    id = j; //记住最后一个同名的processModel的下标
                 }
             }
-            processModels.get(i).setDisplay_name(processModels.get(i).getName() + "-" + id);
+            if(flag) processModels.get(i).setNum(1);
+            else processModels.get(i).setNum(processModels.get(id).getNum() + 1); //下标从0开始，故表示第几个需+1
+            processModels.get(i).setDisplay_name(processModels.get(i).getName() + "-" + processModels.get(i).getNum());
         }
         processModelRepository.save(processModels);
 
@@ -165,7 +169,7 @@ public class InitialService {
         //处理ArtifactModel表的冗余
 //        List<ArtifactModel> artifactModels = artifactModelRepository.findAll();
 //        for(ArtifactModel artifactModel : artifactModels){
-//            boolean flag = false; //这个ArtifactModel在ProcessModel里没找到，应该被删除
+//            boolean flag = false;  //这个ArtifactModel在ProcessModel里没找到，应该被删除
 //            for(ProcessModel processModel : processModels){
 //                for(ArtifactModel artifact : processModel.artifacts){
 //                    if(artifact.getId().equals(artifactModel.getId())){

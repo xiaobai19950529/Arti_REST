@@ -36,6 +36,14 @@
             </tr>
             <tr>
                 <td>
+                    <span>Customer Name</span>
+                </td>
+                <td>
+                    <span class="form-control-static">{{process.customerName}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <span>CreatedAt</span>
                 </td>
                 <td>
@@ -53,7 +61,7 @@
             <tr>
                 <td>Process model</td>
                 <td>
-                    <a href="/#/processModel/{{process.processModel.id}}">{{process.processModel.name}}</a>
+                    <a href="/#/processModel/{{process.processModel.id}}">{{process.processModel.display_name}}</a>
                 </td>
             </tr>
             </tbody>
@@ -111,7 +119,10 @@
                                                         <tr ng-repeat="attr in artifact.attributes">
                                                             <td class="">{{attr.name}}</td>
                                                             <td class="">{{attr.comment}}</td>
-                                                            <td class="comment">
+                                                            <td class="comment" ng-if="attr.name==='customerName'">
+                                                                <input class="form-control" type="text" name="{{artifact.name}}[{{attr.name}}]" value="{{attr.value}}" readonly/>
+                                                            </td>
+                                                            <td class="comment" ng-if="attr.name != 'customerName'">
                                                                 <input class="form-control" type="text" name="{{artifact.name}}[{{attr.name}}]" value="{{attr.value}}" />
                                                                 <!-- <input ng-if="isDateAttr(attr.name)" class="form-control" type="text" name="{{artifact.name}}[{{attr.name}}]" value="{{attr.value | date: 'yyyy-MM-dd HH:mm:ss'}}" /> -->
                                                             </td>
@@ -176,12 +187,12 @@
                                                             </td>
                                                         </tr>
 
-                                                        <tr>
-                                                            <td>ID</td>
-                                                            <td>
-                                                                <input type="text" class="form-control" ng-model="currentArtifactForService.id" disabled name="{{currentService.inputArtifact}}[id]" />
-                                                            </td>
-                                                        </tr>
+                                                        <!--<tr>-->
+                                                            <!--<td>ID</td>-->
+                                                            <!--<td>-->
+                                                                <!--<input type="text" class="form-control" ng-model="currentArtifactForService.id" disabled name="{{currentService.inputArtifact}}[id]" />-->
+                                                            <!--</td>-->
+                                                        <!--</tr>-->
 
                                                         <!--<tr ng-repeat="param in currentService.inputParams">-->
                                                         <!--<td>{{param}}</td>-->
@@ -192,7 +203,10 @@
 
                                                         <tr ng-repeat="attribute in currentArtifactForService.attributes" ng-if="isServiceParam(currentService, attribute.name)">
                                                             <td>{{attribute.comment}}</td>
-                                                            <td>
+                                                            <td ng-if="attribute.name==='customerName'">
+                                                                <input type="text" ng-model="attribute.value" class="form-control" readonly>
+                                                            </td>
+                                                            <td ng-if="attribute.name != 'customerName'">
                                                                 <input type="text" ng-model="attribute.value" class="form-control" />
                                                             </td>
                                                         </tr>

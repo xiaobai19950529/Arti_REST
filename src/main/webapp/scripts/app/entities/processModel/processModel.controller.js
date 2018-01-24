@@ -2,8 +2,6 @@
 
 angular.module('artirestApp')
     .controller('ProcessModelController', function ($scope, $state, ProcessModel, ParseLinks) {
-
-
         $scope.processModels = [];
         $scope.predicate = 'id';
         $scope.reverse = false;
@@ -13,6 +11,10 @@ angular.module('artirestApp')
                 $scope.links = ParseLinks.parse(headers('link'));
                 $scope.totalItems = headers('X-Total-Count');
                 $scope.processModels = result;
+                console.log(result);
+                console.log($scope.links);
+                console.log("哈哈");
+                console.log($scope.totalItems);
             });
         };
         $scope.loadPage = function(page) {

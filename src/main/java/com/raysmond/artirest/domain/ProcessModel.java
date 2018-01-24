@@ -36,6 +36,8 @@ public class ProcessModel implements Serializable {
     @Field("display_name")
     private String display_name;
 
+    private Integer num;
+
     @Field("comment")
     private String comment;
 
@@ -81,6 +83,14 @@ public class ProcessModel implements Serializable {
 
     public String getDisplay_name() {
         return display_name;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
 
     public void setDisplay_name(String display_name) {

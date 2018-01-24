@@ -12,6 +12,10 @@ angular.module('artirestApp')
             Process.get({id: id}, function(result) {
                 $scope.process = result;
                 $scope.processModel = $scope.process.processModel;
+                $scope.artifactModels = $scope.processModel.artifacts;
+                for(var key in $scope.artifactModels){
+                    $scope.artifactModel = $scope.artifactModels[key]; //找最后一个artifactModel当作本artifact
+                }
                 $scope.loadAvailableServices();
                 $scope.loadLogs();
             });
@@ -100,16 +104,21 @@ angular.module('artirestApp')
 
         $scope.showService = function(service){
             $scope.currentService = service;
-            console.log("service:" + service);
-
+            console.log($scope.currentService);
             var artifact = findProcessArtifact(service.inputArtifact);
-            console.log(artifact);
             if (artifact != undefined){
                 $scope.currentArtifactForService = artifact;
                 console.log("artifact is not undefined!");
             } else {
                 console.log("artifact is undefined!");
                 $scope.currentArtifactForService = initArtifact(service.inputArtifact);
+                var currentArtifact = $scope.currentArtifactForService;
+                for(var attr in currentArtifact.attributes){
+                    if(currentArtifact.attributes[attr].name === "customerName"){
+                        currentArtifact.attributes[attr].value = $scope.process.customerName;
+                    }
+                }
+                $scope.currentArtifactForService = currentArtifact;
                 console.log($scope.currentArtifactForService);
             }
 
@@ -122,8 +131,7 @@ angular.module('artirestApp')
 
             $http.post(url, $scope.currentArtifactForService)
                 .then(function(res){
-                    console.log(res);
-
+                    //console.log(res);
                     $scope.refresh();
                     $scope.currentService = undefined;
                     $scope.currentArtifactForService = undefined;

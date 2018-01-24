@@ -36,7 +36,7 @@ angular.module('artirestApp')
                 //$timeout($scope.showStatesFlowcharts(), 1000);
                 setTimeout(function(){
                     $scope.showStatesFlowcharts();
-                }, 1000);
+                }, 10);
 
                 $scope.loadInstances(); //从后台加载实例
             });
