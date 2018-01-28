@@ -5,34 +5,66 @@ angular.module('artirestApp')
         $scope.processModel = entity;
         $scope.instances = {};
         $scope.statisticModels = {};
-
+        $scope.operators = [">",">=","=","<=","<"];
+        // $scope.selected_punctuation =
         $scope.ratio = 1;
 
+        $scope.express_save = function (attr) {
+            console.log(attr);
+            console.log($scope.operators[attr.name]);
+            $scope.exp = attr.name + $scope.operators[attr.name] + attr.value;
+            console.log($scope.exp);
+        };
+
+        $scope.findInstanceByCondition = function (res) {
+            console.log(res);
+            var ans = [];
+            var id = 0;
+            console.log($scope.processModel.artifacts[0].attributes);
+            for(var artifact in $scope.processModel.artifacts){
+                var attributes = $scope.processModel.artifacts[artifact].attributes;
+                for(var attr in attributes){
+                    console.log(attributes[attr].name);
+                    ans[id] = { "name":attributes[attr].name, "type":attributes[attr].type, "value":attributes[attr].value,
+                                "operator": $scope.operators[attributes[attr].name] };
+                    // ans[id].type = attr.type;
+                    // ans[id].value = attr.value;
+                    // ans[id].operator = operators[attr.name];
+                    id++;
+                }
+            }
+            console.log(ans);
+            $http({
+                method: "POST",
+                url: "/api/processModels/"+$scope.processModel.id+"/processes_query",
+                headers:{
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                data: JSON.stringify(ans),
+
+            }).then(function(result){
+                    $scope.instancesByCondition = result.data;
+                    console.log(result.data);
+                    $scope.instances_query = result.data;
+                }, function(res){
+
+                });
+        };
+
         $scope.statisticModels = StatisticModelsService.findAll();
-        console.log("statisticModels:");
-        console.log($scope.statisticModels);
         $scope.statisticModels.$promise.then(function(data){
             var statisticModel = data[0];
-            console.log("processModelId: " + $stateParams.id);
+            // console.log("processModelId: " + $stateParams.id);
             var processModelId = $stateParams.id;
             var stateNumberOfModels = statisticModel.stateNumberOfModels;
-            console.log(stateNumberOfModels);
             $scope.stateNumberOfModel = stateNumberOfModels[processModelId];
-             console.log($scope.stateNumberOfModel);
-
-            var instances = $scope.stateNumberOfModel.instance;
-            console.log(instances);
-            console.log(stateNumberOfModels[processModelId].instances);
-            $scope.ratio_instance = 1;
-            $scope.ratio_running = stateNumberOfModels[processModelId].running / instances;
-            $scope.ratio_pending = stateNumberOfModels[processModelId].pending / instances;
-            $scope.ratio_ended = stateNumberOfModels[processModelId].ended / instances;
-            console.log($scope.ratio_running / $scope.ratio_pending);
         });
 
         $scope.load = function (id) {
             ProcessModel.get({id: id}, function(result) {
                 $scope.processModel = result; //作用域仅在此函数
+                var artifactModel = $scope.processModel.artifacts[0];
+                console.log(artifactModel);
                 //$timeout($scope.showStatesFlowcharts(), 1000);
                 setTimeout(function(){
                     $scope.showStatesFlowcharts();
@@ -81,18 +113,6 @@ angular.module('artirestApp')
             $http.get('/api/processModels/'+$scope.processModel.id+'/processes')
                 .then(function(res){
                     $scope.instances = res.data;
-                    // console.log(res.data);
-                    // console.log($scope.instances);
-                    for (var process_index in $scope.instances) {
-                        // console.log("processName: ")
-                        // console.log($scope.instances[process_index]);
-                        for (var artifact_index in $scope.instances[process_index].artifacts) {
-                            // console.log("name = " + artifact_index);
-                            if ($scope.instances[process_index].artifacts == null) {
-                                $scope.instances[process_index].artifacts = "NULL";
-                            }
-                        }
-                    }
                 }, function(res){
 
                 });

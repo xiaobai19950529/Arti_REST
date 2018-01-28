@@ -45,6 +45,8 @@ public class Artifact implements Serializable {
     @DBRef
     private ArtifactModel artifactModel;
 
+    private String processId;
+
     private Set<Attribute> attributes = new HashSet<>();
 
     public String getId() {
@@ -93,6 +95,14 @@ public class Artifact implements Serializable {
 
     public void setAttributes(Set<Attribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
     }
 
     public ArtifactModel getArtifactModel() {

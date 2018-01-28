@@ -111,15 +111,18 @@
 
     </div>
 
-    <ul class="nav nav-tabs" ng-init="curTab = 'tab-1'">
+    <ul class="nav nav-tabs" ng-init="curTab = 'tab-3'">
         <li ng-class="{'active': curTab === 'tab-1'}">
-            <a ng-click="curTab = 'tab-1'" > Artifacts</a>
+            <a ng-click="curTab = 'tab-1'; load(processModel.id)" > Artifacts</a>
         </li>
 
         <li ng-class="{'active': curTab === 'tab-2'}">
-            <a ng-click="curTab = 'tab-2'; showInstances()" > Instances </a>
+            <a ng-click="curTab = 'tab-2';" > Instances </a>
         </li>
 
+        <li ng-class="{'active': curTab === 'tab-3'}">
+            <a ng-click="curTab = 'tab-3'; " > Search </a>
+        </li>
     </ul>
 
     <div class="tab-content">
@@ -128,13 +131,72 @@
                 <div class="col-sm-12" ng-repeat="artifact in processModel.artifacts" id="artifact-{{artifact.id}}">
                     <div class="panel panel-default artifact" >
                         <div class="panel-heading">
-                            <h3 class="panel-title">Life Cycle</h3>
+                            <div class="pull-right">
+                                <button class="btn btn-xs btn-default" onclick="$(this).parent().parent().find('input').toggle();$(this).parent().parent().find('h3').toggle();">
+                                    <span class="glyphicon glyphicon-pencil">Edit</span>
+                                </button>
+                            </div>
+                            <h3 class="panel-title">{{artifact.name}}</h3>
+                            <input style="display: none; width: 200px;" type="text" class="form-control" ng-model="artifact.name" />
                         </div>
                         <div class="panel-body">
+                            <table class="table table-hover ">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Comment</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="artifact-attr" ng-repeat="attr in artifact.attributes">
+                                    <td class="" style="width: 200px;">
+                                        <span>{{attr.name}}</span>
+                                        <!--<input style="display: none;" type="text" class="form-control" ng-model="attr.name" />-->
+                                    </td>
+                                    <td class="type" style="width: 200px;">
+                                        <span>{{attr.type}}</span>
+                                        <!--<select style="display: none;" class="form-control" ng-options="item as item for item in attrTypes" ng-model="attr.type"></select>-->
+                                    </td>
+                                    <td class="comment">
+                                        <span>{{attr.comment}}</span>
+                                        <!--<input style="display: none;" type="text" class="form-control" ng-model="attr.comment" />-->
+                                    </td>
+                                    <td style="width: 100px;">
+                                        <button type="button" onclick="$(this).parent().parent().find('td>span').toggle();$(this).parent().parent().find('td .form-control').toggle();" class="btn btn-sm btn-default">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" ng-click="removeAttr(artifact, attr)">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" type="text" ng-model="newAttr.name" placeholder="Name" />
+                                    </td>
+                                    <td>
+                                        <select  class="form-control" ng-options="item as item for item in attrTypes" ng-model="newAttr.type"></select>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="text" ng-model="newAttr.comment" placeholder="Comment" />
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" type="button" ng-click="addAttr(artifact)">Add</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
                             <div id="myPalette-myDiagram-{{artifact.id}}" style="border: solid 1px #ccc; height: 100px;" ></div>
                             <div id="myDiagram-{{artifact.id}}" style="border: solid 1px #ccc; height: 300px"></div>
 
                             <hr>
+                            <button class="btn btn-sm btn-primary" type="button" ng-click="saveEditArtifact(artifact)">Save</button>
+
+                            <!--<span>Reference artifacts: {{artifact.referenceArtifacts}}</span>-->
+
 
                         </div>
                     </div>
@@ -183,6 +245,126 @@
                     </table>
                 </div>
             </div>
+
+        </div>
+
+        <div class="tab-item artifact-list" ng-show="curTab === 'tab-3'">
+            <div class="row">
+                <div class="col-sm-12" ng-repeat="artifact in processModel.artifacts"> <!--ArtifactModel-->
+                    <div class="panel panel-default artifact" >
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{artifact.name}}</h3>
+                            <input style="display: none; width: 200px;" type="text" class="form-control" ng-model="artifact.name" />
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-hover ">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Comment</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="artifact-attr" ng-repeat="attr in artifact.attributes">
+                                    <td class="" style="width: 200px;">
+                                        <span>{{attr.name}}</span>
+                                        <!--<input style="display: none;" type="text" class="form-control" ng-model="attr.name" />-->
+                                    </td>
+                                    <td class="type" style="width: 200px;">
+                                        <span>{{attr.type}}</span>
+                                        <!--<select style="display: none;" class="form-control" ng-options="item as item for item in attrTypes" ng-model="attr.type"></select>-->
+                                    </td>
+                                    <td class="comment" style="width: 200px">
+                                        <span>{{attr.comment}}</span>
+                                        <!--<input style="display: none;" type="text" class="form-control" ng-model="attr.comment" />-->
+                                    </td>
+                                    <td ng-if="attr.type == 'Double'" style="width: 100px">
+                                        <!--{{punctuation[attr.name]}}-->
+                                        <select ng-init="operators[attr.name]=operators[0]" ng-model="operators[attr.name]" ng-options="x for x in operators"></select>
+                                    </td>
+                                    <td ng-if="attr.type != 'Double'" style="width: 100px">
+                                    </td>
+                                    <td style="width: 300px">
+                                        <input type="text" ng-model="attr.value"/>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" type="button" ng-click="express_save(attr)">
+                                            +
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+
+                            <hr>
+
+                            <!--<span>Reference artifacts: {{artifact.referenceArtifacts}}</span>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <table class="table table-hover ">
+                        <tr>
+                            <td>
+                                <input type="text" ng-model="exp" class="form-control" style="width: 650px;"/>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" type="button" ng-click="findInstanceByCondition(exp)">
+                                    Search
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+
+
+                </div>
+
+            </div>
+
+            <div class="panel panel-default">
+                <div ng-show="processModel.status=='DESIGNING'" class="panel-body">
+                    <div class="alert alert-warning">
+                        The process model is not enacted.
+                    </div>
+                </div>
+                <div ng-show="processModel.status=='ENACTED'" class="panel-body">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <th>Name</th>
+                        <th>CurrentState</th>
+                        <th>Artifacts</th>
+                        <!-- <th>Is Running</th> -->
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="instance in instances_query | orderBy: 'createdAt': true">
+                            <td>
+                                <a href="/#/process-monitor/{{instance.id}}">{{instance.name}}-
+                                    {{ instance.createdAt | date:'yyyy-MM-dd HH:mm' }}
+                                </a>
+                            </td>
+                            <td ng-if="instance.artifacts.length == 0">
+                                <span ng-class="'label label-success'">init</span>
+                            </td>
+                            <td ng-repeat="artifact in instance.artifacts">
+                                <span ng-class="'label label-success'">{{artifact.currentState}}</span>
+                            </td>
+                            <td>{{instance.artifacts.length}}</td>
+                            <!-- <td>{{instance.isRunning}}</td> -->
+                            <td>{{instance.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                            <td>{{instance.updatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
 
         </div>
     </div>

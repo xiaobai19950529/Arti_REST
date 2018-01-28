@@ -11,18 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Attr;
 
 import javax.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Service Implementation for managing Process.
@@ -83,6 +82,79 @@ public class ProcessService {
     public Page<Process> findInstances(String processModelId, Pageable pageable) {
         ProcessModel processModel = processModelRepository.findOne(processModelId);
         Page<Process> processes = processRepository.findByProcessModel(processModel, pageable);
+        return processes;
+    }
+
+    public List<Process> findInstancesByCondition(String processModelId, Pageable pageable, List<AttributeOfQuery> attributeOfQueries) {
+        ProcessModel processModel = processModelRepository.findOne(processModelId); //根据id找出对应的流程模型
+//        Page<Process> processes = processRepository.findByProcessModel(processModel, pageable);
+        Set<ArtifactModel> artifactModels = processModel.artifacts;
+        String attr = "";
+        ArtifactModel artifactModel;
+        for(ArtifactModel artifact : artifactModels){
+            artifactModel = artifact;
+        }
+
+        List<String> processIds = new LinkedList<>();
+        List<Artifact> artifacts = new LinkedList<>();
+        List<Process> processes = new LinkedList<>(); //存储最终找出来的流程实例
+
+        List<AttributeOfQuery> queries = new LinkedList<>();
+
+        for(AttributeOfQuery attributeOfQuery : attributeOfQueries){ //遍历总的查询，找出所有查询条件
+            if(attributeOfQuery.getValue() != null){
+                queries.add(attributeOfQuery);
+            }
+        }
+
+        for(Artifact artifact : artifactService.findAll()){
+            Set<Attribute> attributes = artifact.getAttributes();
+            for(Attribute attribute : attributes){
+                for(AttributeOfQuery query : queries){
+                    if(attribute.getName().equals(query.getName())){ //如果属性名相等，看类型
+                        if(query.getType().equals("Double")){
+                            String operator = query.getOperator();
+                            String v_query = query.getValue().toString();
+                            Integer value_query = Integer.parseInt(v_query);
+                            String v = attribute.getValue().toString();
+                            Integer value;
+                            if(v.equals("")) value = 0;
+                            else value = Integer.parseInt(v);
+                            switch (operator){
+                                case ">": if(value > value_query){
+                                    artifacts.add(artifact);
+                                }
+                                case ">=": if(value > value_query){
+                                    artifacts.add(artifact);
+                                }
+                                case "=": if(value == value_query){
+                                    artifacts.add(artifact);
+                                }
+                                case "<=": if(value <= value_query){
+                                    artifacts.add(artifact);
+                                }
+                                case "<": if(value < value_query){
+                                    artifacts.add(artifact);
+                                }
+                            }
+                        }
+                        else if(query.getType().equals("String")){
+                            String value = (String)query.getValue();
+                            if(attribute.getValue().equals(value)){
+                                artifacts.add(artifact);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("artifactsize = " + artifacts.size());
+        for(Artifact artifact : artifacts){
+            System.out.println(artifact.getProcessId());
+            processes.add(processRepository.findOne(artifact.getProcessId()));
+        }
+
         return processes;
     }
 
@@ -164,10 +236,11 @@ public class ProcessService {
     }
 
 
-    public Artifact newArtifactFromModel(ArtifactModel model) {
+    public Artifact newArtifactFromModel(ArtifactModel model, Process process) {
         Artifact artifact = new Artifact();
         artifact.setArtifactModel(model);
         artifact.setName(model.getName());
+        artifact.setProcessId(process.getId());
 
         StateModel startState = model.getStartState();
         artifact.setCurrentState(startState == null ? "" : startState.name);
@@ -223,7 +296,8 @@ public class ProcessService {
 
     public Artifact createArtifact(String processId, String artifactModelId) {
         ArtifactModel artifactModel = artifactModelRepository.findOne(artifactModelId);
-        Artifact artifact = newArtifactFromModel(artifactModel);
+        Process process = processRepository.findOne(processId);
+        Artifact artifact = newArtifactFromModel(artifactModel,process);
         artifactRepository.save(artifact);
 
         Process instance = processRepository.findOne(processId);
@@ -290,7 +364,7 @@ public class ProcessService {
             throw new Exception("Illegal artifact model: " + artifactName);
         }
 
-        Artifact artifact = newArtifactFromModel(artifactModel);
+        Artifact artifact = newArtifactFromModel(artifactModel, process);
 
         artifact.setCurrentState(artifactModel.getStartState().name);
         artifact = artifactRepository.save(artifact);

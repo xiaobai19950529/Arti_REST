@@ -2,10 +2,8 @@ package com.raysmond.artirest.web.rest;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Timed;
-import com.raysmond.artirest.domain.Artifact;
+import com.raysmond.artirest.domain.*;
 import com.raysmond.artirest.domain.Process;
-import com.raysmond.artirest.domain.ProcessModel;
-import com.raysmond.artirest.domain.ServiceModel;
 import com.raysmond.artirest.service.*;
 import com.raysmond.artirest.web.rest.util.HeaderUtil;
 import com.raysmond.artirest.web.rest.util.PaginationUtil;
@@ -53,12 +51,31 @@ public class ProcessResource {
     @Timed
     public ResponseEntity<List<Process>> getAllProcesssOfModel(@PathVariable(value = "id") String processModelId, Pageable pageable)
         throws URISyntaxException {
+
         log.debug("REST request to get a page of Processes");
 
         Page<Process> page = processService.findInstances(processModelId, pageable);
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/processes");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/processModels/{id}/processes_query",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<Process>> getProcesssOfModelByCondition(
+        @PathVariable(value = "id") String processModelId, @RequestBody List<AttributeOfQuery> queries, Pageable pageable)
+        throws URISyntaxException {
+
+        log.debug("REST request to get a page of Processes with some conditions");
+
+        System.out.println("queries.size = " + queries.size());
+        //Page<Process> page = processService.findInstancesByCondition(processModelId, pageable, queries);
+        List<Process> processes = processService.findInstancesByCondition(processModelId, pageable, queries);
+
+        HttpHeaders headers = null;
+        return new ResponseEntity<>(processes, headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/processModels/{id}/processes",
@@ -76,8 +93,6 @@ public class ProcessResource {
 
         ProcessModel processModel = processModelService.findOne(processModelId);
         Process result = processService.createProcessInstance(processModel,process.getName());
-
-
 
         return ResponseEntity.created(new URI("/api/processes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("process", result.getId().toString()))

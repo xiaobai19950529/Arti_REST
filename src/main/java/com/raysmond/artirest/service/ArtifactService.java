@@ -58,6 +58,11 @@ public class ArtifactService {
         return result;
     }
 
+    public List<Artifact> findAll(){
+        List<Artifact> result = artifactRepository.findAll();
+        return result;
+    }
+
     /**
      * get one artifact by id.
      *
