@@ -1,25 +1,54 @@
 'use strict';
 
 angular.module('artirestApp')
-    .controller('ProcessModelDetailController2', function ($scope, $rootScope, $state, $stateParams, $timeout, $http, $uibModal, entity, ProcessModel,ArtifactModel,StatisticModelsService,Process) {
+    .controller('ProcessModelDetailController2', function ($scope, $rootScope, $cookies, $state, $stateParams, $timeout, $http, $uibModal, entity, ProcessModel,ArtifactModel,StatisticModelsService,Process) {
         $scope.processModel = entity;
         $scope.instances = {};
         $scope.statisticModels = {};
         $scope.operators = [">",">=","=","<=","<"];
-        // $scope.selected_punctuation =
-        $scope.ratio = 1;
+        // console.log(window.navigator.cookieEnabled); //浏览器接受Cookie
+        var cnt = 0;
+
+
+
+
+        $scope.onload = function () {
+            // var cookies = $cookies.getObject("processModel");
+            // console.log(cookies);
+            // $scope.processModel.artifacts = cookies;
+            // console.log($scope.processModel);
+            // console.log($scope.processModel.artifacts);
+        }
 
         $scope.express_save = function (attr) {
             console.log(attr);
             console.log($scope.operators[attr.name]);
-            $scope.exp = attr.name + $scope.operators[attr.name] + attr.value;
+            if(attr.type != "Double"){
+                $scope.operators[attr.name] = "=";
+            }
+            if(cnt == 0){
+                $scope.exp = attr.name + $scope.operators[attr.name] + attr.value;
+            }
+            else {
+                $scope.exp += "  and  " + attr.name + $scope.operators[attr.name] + attr.value;
+            }
+            cnt++;
+
             console.log($scope.exp);
         };
 
-        $scope.findInstanceByCondition = function (res) {
-            console.log(res);
+        $scope.findInstanceByCondition = function () {
             var ans = [];
             var id = 0;
+            // console.log($scope.processModel);
+            // var processModels = JSON.stringify($scope.processModel);
+            // console.log(processModels);
+            // console.log($cookies.getAll());
+            // $cookies.putObject("processModel", $scope.processModel.artifacts);
+            // console.log($cookies.getObject("processModel"));
+            // // console.log("哈哈哈哈", document.cookie);
+
+
             console.log($scope.processModel.artifacts[0].attributes);
             for(var artifact in $scope.processModel.artifacts){
                 var attributes = $scope.processModel.artifacts[artifact].attributes;
@@ -27,13 +56,13 @@ angular.module('artirestApp')
                     console.log(attributes[attr].name);
                     ans[id] = { "name":attributes[attr].name, "type":attributes[attr].type, "value":attributes[attr].value,
                                 "operator": $scope.operators[attributes[attr].name] };
+
                     // ans[id].type = attr.type;
                     // ans[id].value = attr.value;
                     // ans[id].operator = operators[attr.name];
                     id++;
                 }
             }
-            console.log(ans);
             $http({
                 method: "POST",
                 url: "/api/processModels/"+$scope.processModel.id+"/processes_query",

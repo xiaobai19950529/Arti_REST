@@ -96,46 +96,55 @@ public class ProcessService {
         }
 
         List<String> processIds = new LinkedList<>();
-        List<Artifact> artifacts = new LinkedList<>();
+        List<Artifact> artifactList = new LinkedList<>();
         List<Process> processes = new LinkedList<>(); //存储最终找出来的流程实例
 
-        List<AttributeOfQuery> queries = new LinkedList<>();
+        List<AttributeOfQuery> queries = new LinkedList<>(); //存储有效的查询个数
 
         for(AttributeOfQuery attributeOfQuery : attributeOfQueries){ //遍历总的查询，找出所有查询条件
             if(attributeOfQuery.getValue() != null){
                 queries.add(attributeOfQuery);
             }
         }
+        if(queries.size() == 0) return processRepository.findAll(); //如果没有查询条件(默认),则返回所有流程实例
 
-        for(Artifact artifact : artifactService.findAll()){
-            Set<Attribute> attributes = artifact.getAttributes();
-            for(Attribute attribute : attributes){
-                for(AttributeOfQuery query : queries){
+
+        boolean first = true;
+        for(AttributeOfQuery query : queries){
+            if(first) {
+                artifactList = artifactRepository.findAll();
+            }
+            List<Artifact> artifacts = new LinkedList<>();
+            for(Artifact artifact : artifactList){
+                Set<Attribute> attributes = artifact.getAttributes();
+                for(Attribute attribute : attributes){
                     if(attribute.getName().equals(query.getName())){ //如果属性名相等，看类型
                         if(query.getType().equals("Double")){
                             String operator = query.getOperator();
                             String v_query = query.getValue().toString();
-                            Integer value_query = Integer.parseInt(v_query);
+                            double value_query = Double.parseDouble(v_query);
                             String v = attribute.getValue().toString();
-                            Integer value;
-                            if(v.equals("")) value = 0;
-                            else value = Integer.parseInt(v);
+                            double value;
+                            if(v.equals("")) value = 0D;
+                            else value = Double.parseDouble(v);
                             switch (operator){
                                 case ">": if(value > value_query){
                                     artifacts.add(artifact);
-                                }
-                                case ">=": if(value > value_query){
+                                } break;
+                                case ">=": if(value >= value_query){
                                     artifacts.add(artifact);
-                                }
+                                } break;
                                 case "=": if(value == value_query){
                                     artifacts.add(artifact);
-                                }
+                                } break;
                                 case "<=": if(value <= value_query){
                                     artifacts.add(artifact);
-                                }
+                                } break;
                                 case "<": if(value < value_query){
                                     artifacts.add(artifact);
-                                }
+                                } break;
+                                default:
+                                    System.out.println("出错了！");
                             }
                         }
                         else if(query.getType().equals("String")){
@@ -147,10 +156,13 @@ public class ProcessService {
                     }
                 }
             }
+
+            artifactList = artifacts;
+            first = false;
         }
 
-        System.out.println("artifactsize = " + artifacts.size());
-        for(Artifact artifact : artifacts){
+        System.out.println("artifactsize = " + artifactList.size());
+        for(Artifact artifact : artifactList){
             System.out.println(artifact.getProcessId());
             processes.add(processRepository.findOne(artifact.getProcessId()));
         }

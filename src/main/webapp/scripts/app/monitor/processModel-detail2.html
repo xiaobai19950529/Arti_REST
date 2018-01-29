@@ -1,5 +1,4 @@
-
-<div>
+<div ng-init="onload()">
     <h2><span>ProcessModel</span> {{processModel.name}}</h2>
     <div class="table-responsive">
         <table class="table table-striped">
@@ -31,6 +30,7 @@
                 <div class="instance">
                     <div class="inner-circle text-center">
                     <span>
+                        <!--<a href="/#/process-monitor/process_list"></a>-->
                         {{stateNumberOfModel.instance}}
                     </span>
                     </div>
@@ -313,7 +313,7 @@
                                 <input type="text" ng-model="exp" class="form-control" style="width: 650px;"/>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-primary" type="button" ng-click="findInstanceByCondition(exp)">
+                                <button class="btn btn-sm btn-primary" type="button" ng-click="findInstanceByCondition()">
                                     Search
                                 </button>
                             </td>
@@ -344,7 +344,7 @@
                         <tbody>
                         <tr ng-repeat="instance in instances_query | orderBy: 'createdAt': true">
                             <td>
-                                <a href="/#/process-monitor/{{instance.id}}">{{instance.name}}-
+                                <a href="/#/process-monitor/{{instance.id}}" target="view_window">{{instance.name}}-
                                     {{ instance.createdAt | date:'yyyy-MM-dd HH:mm' }}
                                 </a>
                             </td>
