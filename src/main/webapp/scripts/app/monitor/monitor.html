@@ -114,8 +114,8 @@
             <tbody>
 
                 <tr ng-repeat="processModel in processModels track by processModel.id">
-                    <td><a ui-sref="processModel.detail2({id:processModel.id})">{{$index + 1}}</a></td>
-                    <td><a ui-sref="processModel.detail2({id:processModel.id})">{{processModel.display_name}}</a></td>
+                    <td><a ui-sref="processModel.detail-monitor({id:processModel.id})">{{$index + 1}}</a></td>
+                    <td><a ui-sref="processModel.detail-monitor({id:processModel.id})">{{processModel.display_name}}</a></td>
                     <td>
                         <span ng-class="{'label label-default': processModel.status=='DESIGNING', 'label label-success': processModel.status=='ENACTED'}">{{processModel.status}}</span>
                     </td>
@@ -123,7 +123,7 @@
                     <td>{{processModel.updatedAt | date:'yyyy-MM-dd HH:mm'}}</td>
                     <td>
                         <button type="submit"
-                                ui-sref="processModel.detail2({id:processModel.id})"
+                                ui-sref="processModel.detail-monitor({id:processModel.id})"
                                 class="btn btn-info btn-sm">
                             <span class="glyphicon glyphicon-eye-open"></span>&nbsp;<span> View</span>
                         </button>

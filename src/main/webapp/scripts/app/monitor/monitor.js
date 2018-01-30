@@ -21,7 +21,7 @@ angular.module('artirestApp')
 
                 }
             })
-            .state('processModel.detail2', {
+            .state('processModel.detail-monitor', {
                 parent: 'site',
                 url: '/processModel-monitor/{id}',
                 data: {
@@ -61,4 +61,44 @@ angular.module('artirestApp')
                     }]
                 }
             })
+            .state('process.list-monitor', {
+                parent: 'site',
+                url: '/processModel-monitor/{id}/{type}',
+                data: {
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Process'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'scripts/app/monitor/process-list.html',
+                        controller: 'ProcessLLController'
+                    }
+                },
+                resolve: {
+                    entity: ['$stateParams', 'Process', function($stateParams, Process) {
+                        //return Process.get({id : $stateParams.id});
+                        return {};
+                    }]
+                }
+                // onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                //     $uibModal.open({
+                //         templateUrl: 'scripts/app/monitor/process-list.html',
+                //         controller: 'ProcessLLController',
+                //         size: 'lg',
+                //         resolve: {
+                //             entity: function () {
+                //                 return {};
+                //             }
+                //         }
+                //     }).result.then(function(result) { //成功执行这个函数
+                //         console.log("成功执行");
+                //         $state.go('processModel.detail-monitor', null, { reload: true });
+                //     }, function() { //关闭或取消执行此函数
+                //         console.log("失败");
+                //         $state.go('processModel.detail-monitor');
+                //     })
+                // }]
+            });
+
+
     });

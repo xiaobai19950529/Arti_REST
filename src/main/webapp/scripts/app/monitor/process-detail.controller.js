@@ -3,6 +3,7 @@
 angular.module('artirestApp')
     .controller('ProcessDetailController2', function ($scope, $rootScope, $stateParams, $http, entity, Process, ProcessModel) {
         $scope.process = entity;
+        console.log($scope.process);
         $scope.availableServices = [];
         $scope.processModel = {};
         $scope.currentArtifactForService = {};

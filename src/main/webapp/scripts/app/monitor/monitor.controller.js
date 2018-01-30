@@ -40,15 +40,13 @@ angular.module('artirestApp')
 
             $scope.processModelNumber = $scope.statisticModel.modelnumber;
 
-            $scope.ratio_instance = 1;
-            $scope.ratio_running = running / instance;
-            console.log($scope.ratio_running);
-            $scope.ratio_pending = pending / instance;
-            console.log($scope.ratio_pending);
-            $scope.ratio_ended = ended / instance;
-            console.log($scope.ratio_ended);
-
-            console.log($scope.processModels.id);
+            // $scope.ratio_instance = 1;
+            // $scope.ratio_running = running / instance;
+            // console.log($scope.ratio_running);
+            // $scope.ratio_pending = pending / instance;
+            // console.log($scope.ratio_pending);
+            // $scope.ratio_ended = ended / instance;
+            // console.log($scope.ratio_ended);
         });
 
         function compareCreatedAt(a,b) {

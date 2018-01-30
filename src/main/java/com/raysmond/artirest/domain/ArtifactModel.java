@@ -51,7 +51,6 @@ public class ArtifactModel implements Serializable {
     public Set<StateModel> endStates = new HashSet<>();
 
     @XmlTransient
-    @JsonIgnore
     public StateModel getStartState() {
         for (StateModel state : this.states) {
             if (state.type == StateModel.StateType.START) {
