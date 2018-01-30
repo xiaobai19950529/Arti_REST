@@ -30,8 +30,9 @@
                 <div class="instance">
                     <div class="inner-circle text-center">
                     <span>
-                        <a href="/#/process-monitor/process_list"></a>
-                        {{stateNumberOfModel.instance}}
+                        <a href="/#/processModel-monitor/{{processModel.id}}/instance">
+                            {{stateNumberOfModel.instance}}
+                        </a>
                     </span>
                     </div>
 
@@ -54,7 +55,9 @@
                 <div class="running">
                     <div class="inner-circle text-center">
                     <span>
-                        {{stateNumberOfModel.running}}
+                        <a href="/#/processModel-monitor/{{processModel.id}}/running">
+                            {{stateNumberOfModel.running}}
+                        </a>
                     </span>
                     </div>
                 </div>
@@ -75,7 +78,9 @@
                 <div class="pending">
                     <div class="inner-circle text-center">
                         <span>
-                            {{stateNumberOfModel.pending}}
+                            <a href="/#/processModel-monitor/{{processModel.id}}/pending">
+                                {{stateNumberOfModel.pending}}
+                            </a>
                         </span>
                     </div>
                 </div>
@@ -96,7 +101,9 @@
                 <div class="ended">
                     <div class="inner-circle text-center">
                     <span>
-                        {{stateNumberOfModel.ended}}
+                        <a href="/#/processModel-monitor/{{processModel.id}}/ended">
+                            {{stateNumberOfModel.ended}}
+                        </a>
                     </span>
                     </div>
                 </div>
@@ -113,7 +120,7 @@
 
     <ul class="nav nav-tabs" ng-init="curTab = 'tab-1'">
         <li ng-class="{'active': curTab === 'tab-1'}">
-            <a ng-click="curTab = 'tab-1'; load(processModel.id)" > Artifacts</a>
+            <a ng-click="curTab = 'tab-1'; load(processModel.id)" > Instances</a>
         </li>
     </ul>
 
