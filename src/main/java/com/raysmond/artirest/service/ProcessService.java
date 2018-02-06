@@ -82,10 +82,12 @@ public class ProcessService {
     public Page<Process> findInstances(String processModelId, Pageable pageable) {
         ProcessModel processModel = processModelRepository.findOne(processModelId);
         Page<Process> processes = processRepository.findByProcessModel(processModel, pageable);
+        System.out.println(processes.getTotalElements());
+        System.out.println(pageable.toString());
         return processes;
     }
 
-    public List<Process> findInstancesByCondition(String processModelId, Pageable pageable, List<AttributeOfQuery> attributeOfQueries) {
+    public Page<Process> findInstancesByCondition(String processModelId, Pageable pageable, List<AttributeOfQuery> attributeOfQueries) {
         ProcessModel processModel = processModelRepository.findOne(processModelId); //根据id找出对应的流程模型
 //        Page<Process> processes = processRepository.findByProcessModel(processModel, pageable);
         Set<ArtifactModel> artifactModels = processModel.artifacts;
@@ -100,13 +102,22 @@ public class ProcessService {
         List<Process> processes = new LinkedList<>(); //存储最终找出来的流程实例
 
         List<AttributeOfQuery> queries = new LinkedList<>(); //存储有效的查询个数
-
+        System.out.println(attributeOfQueries.toString()+ "哈哈");
         for(AttributeOfQuery attributeOfQuery : attributeOfQueries){ //遍历总的查询，找出所有查询条件
             if(attributeOfQuery.getValue() != null){
                 queries.add(attributeOfQuery);
             }
         }
-        if(queries.size() == 0) return processRepository.findAll(); //如果没有查询条件(默认),则返回所有流程实例
+        if(queries.size() == 0) {
+            Page<Process> page = findInstances(processModelId, pageable);
+//            processes = processRepository.findAll();
+//
+//            int start = pageable.getOffset();
+//            int end = (start + pageable.getPageSize()) > processes.size() ? processes.size() : (start + pageable.getPageSize());
+//            Page<Process> pages = new PageImpl<Process>(processes.subList(start, end), pageable, processes.size());
+
+            return page;
+        }
 
 
         boolean first = true;
@@ -167,7 +178,12 @@ public class ProcessService {
             processes.add(processRepository.findOne(artifact.getProcessId()));
         }
 
-        return processes;
+        int start = pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > processes.size() ? processes.size() : (start + pageable.getPageSize());
+        System.out.println("start:" + start + " end:" + end + " pageSize:" + pageable.getPageSize());
+        Page<Process> page = new PageImpl<Process>(processes.subList(start, end), pageable, processes.size());
+
+        return page;
     }
 
     /**

@@ -1,4 +1,4 @@
-<div ng-init="onload()">
+<div>
     <h2><span>ProcessModel</span> {{processModel.name}}</h2>
     <div class="table-responsive">
         <table class="table table-striped">
@@ -220,29 +220,35 @@
                         The process model is not enacted.
                     </div>
                 </div>
-                <div ng-show="processModel.status=='ENACTED'" class="panel-body">
+                <div ng-show="processModel.status=='ENACTED'" class="panel-body table-responsive">
                     <table class="table table-hover table-striped">
                         <thead>
-                        <th>Name</th>
-                        <th>CurrentState</th>
-                        <th>Artifacts</th>
-                        <!-- <th>Is Running</th> -->
-                        <th>Created At</th>
-                        <th>Updated At</th>
+                            <tr jh-sort="predicate" ascending="reverse" callback="resort()">
+                                <!--<th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>-->
+                                <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                                <th jh-sort-by="state"><span>CurrentState</span> <span class="glyphicon glyphicon-sort"></span></th>
+                                <th><span>Artifacts</span></th>
+                                <th jh-sort-by="createdAt"><span>CreatedAt</span> <span class="glyphicon glyphicon-sort"></span></th>
+                                <th jh-sort-by="updatedAt"><span>UpdatedAt</span> <span class="glyphicon glyphicon-sort"></span></th>
+
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="instance in instances | orderBy: 'createdAt': true">
+                        <tr ng-repeat="instance in instances | orderBy: predicate: reverse">
                             <td>
                                 <a href="/#/process-monitor/{{instance.id}}">{{instance.name}}-
                                     {{ instance.createdAt | date:'yyyy-MM-dd HH:mm' }}
                                 </a>
                             </td>
-                            <td ng-if="instance.artifacts.length == 0">
-                                <span ng-class="'label label-success'">init</span>
+                            <td>
+                                <span ng-class="'label label-success'">{{instance.currentState}}</span>
                             </td>
-                            <td ng-repeat="artifact in instance.artifacts">
-                                <span ng-class="'label label-success'">{{artifact.currentState}}</span>
-                            </td>
+                            <!--<td ng-if="instance.artifacts.length == 0">-->
+                                <!--<span ng-class="'label label-success'">init</span>-->
+                            <!--</td>-->
+                            <!--<td ng-repeat="artifact in instance.artifacts">-->
+                                <!--<span ng-class="'label label-success'">{{artifact.currentState}}</span>-->
+                            <!--</td>-->
                             <td>{{instance.artifacts.length}}</td>
                             <!-- <td>{{instance.isRunning}}</td> -->
                             <td>{{instance.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
@@ -250,6 +256,10 @@
                         </tr>
                         </tbody>
                     </table>
+
+                    <div class="text-center">
+                        <uib-pagination class="pagination-sm" items-per-page="itemsperpage" total-items="totalItems" ng-model="page" ng-change="loadAll()"></uib-pagination>
+                    </div>
                 </div>
             </div>
 
@@ -270,7 +280,7 @@
                                             <h3 class="panel-title">{{artifact.name}}</h3>
                                         </td>
                                         <td>
-                                            <button class="btn btn-sm btn-primary" type="button" style="float:right" ng-click="findInstanceByCondition()">
+                                            <button class="btn btn-sm btn-primary" type="button" style="float: right;" ng-click="findInstanceByCondition()">
                                                 Search
                                             </button>
                                         </td>
@@ -312,7 +322,7 @@
                                     <td ng-if="attr.type != 'Double'" style="width: 100px">
                                     </td>
                                     <td style="width: 300px">
-                                        <input type="text" ng-model="attr.value"/>
+                                        <input type="text" ng-model="attr.value" ng-change="onSearchDataChange(attr.value, artifact, attr)"/>
                                     </td>
                                     <!--<td>-->
                                         <!--<button class="btn btn-sm btn-primary" type="button" ng-click="express_save(attr)">-->
@@ -344,26 +354,32 @@
                 <div ng-show="processModel.status=='ENACTED'" class="panel-body">
                     <table class="table table-hover table-striped">
                         <thead>
-                        <th>Name</th>
-                        <th>CurrentState</th>
-                        <th>Artifacts</th>
-                        <!-- <th>Is Running</th> -->
-                        <th>Created At</th>
-                        <th>Updated At</th>
+                        <tr jh-sort="predicate" ascending="reverse" callback="resort()">
+                            <!--<th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>-->
+                            <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="currentState"><span>CurrentState</span> <span class="glyphicon glyphicon-sort"></span></th>
+                            <th><span>Artifacts</span></th>
+                            <th jh-sort-by="createdAt"><span>CreatedAt</span> <span class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="updatedAt"><span>UpdatedAt</span> <span class="glyphicon glyphicon-sort"></span></th>
+
+                        </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="instance in instances_query | orderBy: 'createdAt': true">
+                        <tr ng-repeat="instance in instances_query | orderBy: 'predicate': reverse">
                             <td>
                                 <a href="/#/process-monitor/{{instance.id}}" target="view_window">{{instance.name}}-
                                     {{ instance.createdAt | date:'yyyy-MM-dd HH:mm' }}
                                 </a>
                             </td>
-                            <td ng-if="instance.artifacts.length == 0">
-                                <span ng-class="'label label-success'">init</span>
+                            <td>
+                                <span ng-class="'label label-success'">{{instance.currentState}}</span>
                             </td>
-                            <td ng-repeat="artifact in instance.artifacts">
-                                <span ng-class="'label label-success'">{{artifact.currentState}}</span>
-                            </td>
+                            <!--<td ng-if="instance.artifacts.length == 0">-->
+                                <!--<span ng-class="'label label-success'">init</span>-->
+                            <!--</td>-->
+                            <!--<td ng-repeat="artifact in instance.artifacts">-->
+                                <!--<span ng-class="'label label-success'">{{artifact.currentState}}</span>-->
+                            <!--</td>-->
                             <td>{{instance.artifacts.length}}</td>
                             <!-- <td>{{instance.isRunning}}</td> -->
                             <td>{{instance.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
@@ -371,6 +387,9 @@
                         </tr>
                         </tbody>
                     </table>
+                    <div class="text-center">
+                        <uib-pagination class="pagination-sm" items-per-page="10" total-items="totalItems" ng-model="page" ng-change="loadAll()"></uib-pagination>
+                    </div>
                 </div>
             </div>
 

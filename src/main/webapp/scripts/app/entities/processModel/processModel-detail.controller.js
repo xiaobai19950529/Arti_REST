@@ -8,21 +8,30 @@ angular.module('artirestApp')
         $scope.predicate = 'createdAt';
         $scope.reverse = false;
         $scope.page = 1;
-        $scope.loadAll = function(id) {
-            console.log(id);
-            ProcessOfModel.query({page: $scope.page - 1, size: 10, sort: [$scope.predicate + ',' + ($scope.reverse ? 'asc' : 'desc')]}, function(result, headers) {
-                $scope.links = ParseLinks.parse(headers('link'));
-                $scope.totalItems = headers('X-Total-Count');
-                $scope.processes = result;
-                console.log(result);
-                console.log($scope.links);
-                console.log("哈哈");
-                console.log($scope.totalItems);
-            });
-        };
+        $scope.itemsperpage = 5;
+        $scope.predicate = 'createdAt';
+        // $scope.loadAll = function(id) {
+        //     console.log(id);
+        //
+        //     $http({
+        //         method: "GET",
+        //         url: "/api/processModels/"+id+"/processes",
+        //         headers:{
+        //             "Content-Type": "application/json; charset=utf-8"
+        //         },
+        //         data: {}
+        //
+        //     }).then(function(result){
+        //         console.log("小白");
+        //         console.log(result);
+        //     });
+        // };
+        //
+        // $scope.loadAll($stateParams.id);
 
         $scope.load = function (id) {
             ProcessModel.get({id: id}, function(result) {
+                console.log("哈哈");
                 $scope.processModel = result;
                 //console.log($scope.processModel);
                 //$timeout($scope.showStatesFlowcharts(), 1000);
@@ -78,6 +87,7 @@ angular.module('artirestApp')
             $http.get('/api/processModels/'+$scope.processModel.id+'/processes') //从后台ProcessResource拿数据
                 .then(function(res){
                     $scope.instances = res.data;
+                    console.log($scope.instances);
                 }, function(res){
 
                 });

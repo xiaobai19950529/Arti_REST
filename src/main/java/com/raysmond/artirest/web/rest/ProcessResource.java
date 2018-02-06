@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,8 +25,7 @@ import javax.inject.Inject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * REST controller for managing Process.
@@ -70,13 +70,29 @@ public class ProcessResource {
 
         log.debug("REST request to get a page of Processes with some conditions");
 
+//        Object o = map.get("ans");
+//        System.out.println(o.getClass().getName());
+//        System.out.println(o.toString());
+//        System.out.println(map.get("pageable"));
+//        List<AttributeOfQuery> queries = new LinkedList<>();
+//        List<AttributeOfQuery> qq = (List<AttributeOfQuery>) o;
+//        for(int i = 0; i < qq.size(); i++){
+//            Object q = qq.get(i);
+//            System.out.println(q.getClass().getName());
+//            AttributeOfQuery attributeOfQuery = new AttributeOfQuery();
+//
+//        }
+//        Pageable pageable = null;
+//        System.out.println(pageable.toString());
         System.out.println("queries.size = " + queries.size());
-        //Page<Process> page = processService.findInstancesByCondition(processModelId, pageable, queries);
-        List<Process> processes = processService.findInstancesByCondition(processModelId, pageable, queries);
+        Page<Process> page = processService.findInstancesByCondition(processModelId, pageable, queries);
 
-        HttpHeaders headers = null;
-        return new ResponseEntity<>(processes, headers, HttpStatus.OK);
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/processes");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+
+
 
     @RequestMapping(value = "/processModels/{id}/processes",
         method = RequestMethod.POST,
@@ -169,7 +185,7 @@ public class ProcessResource {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<Process>> getAllProcesss(Pageable pageable)
+    public ResponseEntity<List<Process>> getAllProcesss(Pageable pageable,String id)
         throws URISyntaxException {
         log.debug("REST request to get a page of Processs");
         Page<Process> page = processService.findAll(pageable);

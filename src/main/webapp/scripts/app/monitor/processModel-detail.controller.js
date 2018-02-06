@@ -1,53 +1,44 @@
 'use strict';
 
 angular.module('artirestApp')
-    .controller('ProcessModelDetailController2', function ($scope, $rootScope, $cookies, $state, $stateParams, $timeout, $http, $uibModal, entity, ProcessModel,ArtifactModel,StatisticModelsService,Process) {
+    .controller('ProcessModelDetailController2', function ($scope, $rootScope, $cookies, $state, $stateParams, $timeout, $http, $uibModal, entity, ParseLinks, ProcessOfModel, ProcessModel,ArtifactModel,StatisticModelsService,Process, ArtifactSearchData) {
         $scope.processModel = entity;
+        $scope.predicate = 'createdAt';
+        $scope.reverse = false;
         $scope.instances = {};
         $scope.statisticModels = {};
         $scope.operators = [">",">=","=","<=","<"];
+        $scope.searchData = ArtifactSearchData;
         // console.log(window.navigator.cookieEnabled); //浏览器接受Cookie
         var cnt = 0;
+        console.log(ArtifactSearchData);
+
+        $scope.itemsperpage = 5;
+        $scope.page = 1;
+
+        $scope.pageable = {page: $scope.page - 1, size: $scope.itemsperpage, sort: [$scope.predicate + ',' + ($scope.reverse ? 'asc' : 'desc'), 'id']};
 
 
-
-
-        $scope.onload = function () {
-            // var cookies = $cookies.getObject("processModel");
-            // console.log(cookies);
-            // $scope.processModel.artifacts = cookies;
-            // console.log($scope.processModel);
-            // console.log($scope.processModel.artifacts);
-        }
-
-        $scope.express_save = function (attr) {
-            console.log(attr);
-            console.log($scope.operators[attr.name]);
-            if(attr.type != "Double"){
-                $scope.operators[attr.name] = "=";
+        $scope.onSearchDataChange = function(data, artifact, attr) {
+            console.log(data, artifact, attr);
+            if($scope.searchData[artifact.id]) {
+                $scope.searchData[artifact.id][attr.name] = data;
+            }else {
+                $scope.searchData[artifact.id] = {};
+                $scope.searchData[artifact.id][attr.name] = data;
             }
-            if(cnt == 0){
-                $scope.exp = attr.name + $scope.operators[attr.name] + attr.value;
-            }
-            else {
-                $scope.exp += "  and  " + attr.name + $scope.operators[attr.name] + attr.value;
-            }
-            cnt++;
 
-            console.log($scope.exp);
+
+        };
+
+        $scope.resort = function() {
+            console.log("dort ", $scope.predicate, $scope.reverse);
+
         };
 
         $scope.findInstanceByCondition = function () {
             var ans = [];
             var id = 0;
-            // console.log($scope.processModel);
-            // var processModels = JSON.stringify($scope.processModel);
-            // console.log(processModels);
-            // console.log($cookies.getAll());
-            // $cookies.putObject("processModel", $scope.processModel.artifacts);
-            // console.log($cookies.getObject("processModel"));
-            // // console.log("哈哈哈哈", document.cookie);
-
 
             console.log($scope.processModel.artifacts[0].attributes);
             for(var artifact in $scope.processModel.artifacts){
@@ -57,27 +48,49 @@ angular.module('artirestApp')
                     ans[id] = { "name":attributes[attr].name, "type":attributes[attr].type, "value":attributes[attr].value,
                                 "operator": $scope.operators[attributes[attr].name] };
 
-                    // ans[id].type = attr.type;
-                    // ans[id].value = attr.value;
-                    // ans[id].operator = operators[attr.name];
                     id++;
                 }
             }
+            var pageable = {page: $scope.page - 1, size: 10};
+            // console.log("啊啊啊");
+            // console.log(document.cookie);
             $http({
                 method: "POST",
                 url: "/api/processModels/"+$scope.processModel.id+"/processes_query",
                 headers:{
                     "Content-Type": "application/json; charset=utf-8"
                 },
-                data: JSON.stringify(ans),
+                data: ans
 
             }).then(function(result){
                     $scope.instancesByCondition = result.data;
                     console.log(result.data);
                     $scope.instances_query = result.data;
+                    console.log($scope.instances_query.length);
+                    $scope.totalItems = $scope.instances_query.length;
+
+                    $scope.instances_query = add_currentState($scope.instances_query);
+
                 }, function(res){
 
                 });
+        };
+
+        var add_currentState = function (instances) {
+            for(var i in instances){
+                var instance = instances[i];
+                var j = 0;
+                instance.currentState = "";
+                for(var id in instance.artifacts){
+                    var artifact = instance.artifacts[id];
+                    j++;
+                    instance.currentState += artifact.currentState + " ";
+                }
+                if(instance.currentState === ""){
+                    instance.currentState = "init";
+                }
+            }
+            return instances;
         };
 
         $scope.statisticModels = StatisticModelsService.findAll();
@@ -100,6 +113,19 @@ angular.module('artirestApp')
                 }, 10);
 
                 $scope.loadInstances(); //从后台加载实例
+
+                for(var id in $scope.searchData) {
+                    if(artifactModel.id === id){
+                        for(var name in $scope.searchData[id]) {
+                            for (var i = 0; i < artifactModel.attributes.length; i++) {
+                                var attr = artifactModel.attributes[i];
+                                if (attr.name === name){
+                                    attr.value = $scope.searchData[id][name];
+                                }
+                            }
+                        }
+                    }
+                }
             });
 
         };
@@ -142,10 +168,12 @@ angular.module('artirestApp')
             $http.get('/api/processModels/'+$scope.processModel.id+'/processes')
                 .then(function(res){
                     $scope.instances = res.data;
+                    $scope.instances = add_currentState($scope.instances);
                 }, function(res){
 
                 });
         };
+
 
         // $scope.instances.$promise.then(function(data) {
         //     console.log("instances : " + $scope.instances);
@@ -190,7 +218,7 @@ angular.module('artirestApp')
 
         $scope.toggleEditAttr = function(artifact, attr){
             var idx = artifact.attributes.indexOf(attr);
-            if(idx==-1) return;
+            if(idx === -1) return;
             var key = '#artifact-'+artifact.id + ' tr.artifact-attr';
             var attrRow = $(key)[idx];
         };

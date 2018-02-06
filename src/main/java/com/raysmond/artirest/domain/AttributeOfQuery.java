@@ -14,6 +14,17 @@ public class AttributeOfQuery {
 
     private String operator;
 
+    public AttributeOfQuery(){
+
+    }
+
+    public AttributeOfQuery(String name,String type,Object value,String operator){
+        this.name = name;
+        this.type = type;
+        this.value = value;
+        this.operator = operator;
+    }
+
     public String getName() {
         return name;
     }
