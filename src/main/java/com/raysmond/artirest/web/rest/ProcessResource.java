@@ -70,23 +70,8 @@ public class ProcessResource {
 
         log.debug("REST request to get a page of Processes with some conditions");
 
-//        Object o = map.get("ans");
-//        System.out.println(o.getClass().getName());
-//        System.out.println(o.toString());
-//        System.out.println(map.get("pageable"));
-//        List<AttributeOfQuery> queries = new LinkedList<>();
-//        List<AttributeOfQuery> qq = (List<AttributeOfQuery>) o;
-//        for(int i = 0; i < qq.size(); i++){
-//            Object q = qq.get(i);
-//            System.out.println(q.getClass().getName());
-//            AttributeOfQuery attributeOfQuery = new AttributeOfQuery();
-//
-//        }
-//        Pageable pageable = null;
-//        System.out.println(pageable.toString());
         System.out.println("queries.size = " + queries.size());
         Page<Process> page = processService.findInstancesByCondition(processModelId, pageable, queries);
-
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/processes");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

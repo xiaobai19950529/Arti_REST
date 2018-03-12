@@ -5,6 +5,7 @@ import com.raysmond.artirest.domain.Process;
 import com.raysmond.artirest.domain.enumeration.ServiceType;
 import com.raysmond.artirest.repository.*;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,23 +92,31 @@ public class ProcessService {
         ProcessModel processModel = processModelRepository.findOne(processModelId); //根据id找出对应的流程模型
 //        Page<Process> processes = processRepository.findByProcessModel(processModel, pageable);
         Set<ArtifactModel> artifactModels = processModel.artifacts;
-        String attr = "";
-        ArtifactModel artifactModel;
-        for(ArtifactModel artifact : artifactModels){
-            artifactModel = artifact;
-        }
 
+        List<Process> process_all = processRepository.findAll();
+        List<Process> processOfModel = new LinkedList<>();
+        for(Process process : process_all){
+            if(process.getId().equals(processModelId)){
+                processOfModel.add(process);
+            }
+        }
+        //筛选本流程模型下的流程实例
         List<String> processIds = new LinkedList<>();
         List<Artifact> artifactList = new LinkedList<>();
         List<Process> processes = new LinkedList<>(); //存储最终找出来的流程实例
 
         List<AttributeOfQuery> queries = new LinkedList<>(); //存储有效的查询个数
-        System.out.println(attributeOfQueries.toString()+ "哈哈");
+
         for(AttributeOfQuery attributeOfQuery : attributeOfQueries){ //遍历总的查询，找出所有查询条件
-            if(attributeOfQuery.getValue() != null){
+            if(attributeOfQuery.getValue() != null && !attributeOfQuery.getValue().equals("")){
                 queries.add(attributeOfQuery);
             }
         }
+
+        for (AttributeOfQuery query : queries){
+            System.out.println(query.getName() + " " + query.getValue());
+        }
+
         if(queries.size() == 0) {
             Page<Process> page = findInstances(processModelId, pageable);
 //            processes = processRepository.findAll();
@@ -167,7 +176,6 @@ public class ProcessService {
                     }
                 }
             }
-
             artifactList = artifacts;
             first = false;
         }
@@ -175,7 +183,10 @@ public class ProcessService {
         System.out.println("artifactsize = " + artifactList.size());
         for(Artifact artifact : artifactList){
             System.out.println(artifact.getProcessId());
-            processes.add(processRepository.findOne(artifact.getProcessId()));
+            Process process = processRepository.findOne(artifact.getProcessId());
+            if(process.getProcessModel().getId().equals(processModelId)){
+                processes.add(process);
+            }
         }
 
         int start = pageable.getOffset();
@@ -216,10 +227,27 @@ public class ProcessService {
     public void delete(String id) {
         log.debug("Request to delete Process : {}", id);
         //删除流程同时需要删除该流程下的artifact from artifact表
+        //不仅如此，还得需重新统计该流程所属流程模型下的数量
+        StatisticModel statisticModel = statisticModelRepository.findAll().get(0);
         Process process = processRepository.findOne(id);
+        StateNumberOfModel stateNumberOfModel = statisticModel.stateNumberOfModels.get(process.getProcessModel().getId()); //找出该流程模型的统计情况
+        System.out.println(process.getIsRunning());
+        System.out.println(process.getEnded());
+        if(process.getIsRunning() == true){
+            stateNumberOfModel.running--;
+        }
+        else if(process.getEnded() == true){
+            stateNumberOfModel.ended--;
+        }
+        else{
+            stateNumberOfModel.pending--;
+        }
+        stateNumberOfModel.instance--;
         for(Artifact artifact : process.getArtifacts()){
             artifactRepository.delete(artifact);
+            stateNumberOfModel.statenumber.put(artifact.getCurrentState(),stateNumberOfModel.statenumber.get(artifact.getCurrentState()) - 1);
         }
+        statisticModelRepository.save(statisticModel);
         processRepository.delete(id);
     }
 
@@ -243,6 +271,7 @@ public class ProcessService {
         process.setProcessModel(model);
         process.setCustomerName(customerName);
         process.setIsRunning(false);
+        process.setEnded(false);
         processRepository.save(process);
 
         //新加代码
@@ -612,6 +641,7 @@ public class ProcessService {
                             System.out.println(endState.name + "==" + transition.toState);
                             if(endState.name.equals(transition.toState)){
                                 process.setIsRunning(false);
+                                process.setEnded(true);
                                 flag = true;
                                 break;
                             }

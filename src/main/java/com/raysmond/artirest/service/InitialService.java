@@ -164,6 +164,9 @@ public class InitialService {
             if(process.getProcessModel() == null){
                 processRepository.delete(process);
             }
+//            if(process.getEnded() == null) {
+//                processRepository.delete(process);
+//            }
         }
 
         //处理ArtifactModel表的冗余
@@ -185,23 +188,23 @@ public class InitialService {
 //        }
 
         //处理Artifact表的冗余
-//        List<Artifact> artifacts = artifactRepository.findAll();
-//        List<Process> processes = processRepository.findAll();
-//
-//        for(Artifact artifact : artifacts){
-//            boolean flag = false;
-//            for(Process process : processes){
-//                for(Artifact artifact1 : process.getArtifacts()){
-//                    if(artifact.getId().equals(artifact1.getId())){
-//                        flag = true;
-//                        break;
-//                    }
-//                }
-//                if(flag) break;
-//            }
-//            if(!flag){
-//                artifactRepository.delete(artifact);
-//            }
-//        }
+        List<Artifact> artifacts = artifactRepository.findAll();
+        List<Process> processes_1 = processRepository.findAll();
+
+        for(Artifact artifact : artifacts){
+            boolean flag = false;
+            for(Process process : processes_1){
+                for(Artifact artifact1 : process.getArtifacts()){
+                    if(artifact.getId().equals(artifact1.getId())){
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag) break;
+            }
+            if(!flag){
+                artifactRepository.delete(artifact);
+            }
+        }
     }
 }

@@ -150,6 +150,7 @@ public class FindService {
         }
         return endStates;
     }
+
 //    public StatisticModel findStatisticModel(String artifactId, String processName,
 //                                             Map<String,StatisticModel> statisticModelcount, List<StateModel> list, Log log){
 //        StatisticModel statisticModel;

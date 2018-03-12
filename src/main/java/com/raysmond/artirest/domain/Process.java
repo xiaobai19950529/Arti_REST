@@ -33,6 +33,9 @@ public class Process implements Serializable {
     @Field("is_running")
     private Boolean isRunning;
 
+    @Field("is_ended")
+    private Boolean isEnded;
+
     @Field("created_at")
     @CreatedDate
     private ZonedDateTime createdAt;
@@ -80,6 +83,14 @@ public class Process implements Serializable {
 
     public void setIsRunning(Boolean isRunning) {
         this.isRunning = isRunning;
+    }
+
+    public Boolean getEnded() {
+        return isEnded;
+    }
+
+    public void setEnded(Boolean ended) {
+        isEnded = ended;
     }
 
     public ZonedDateTime getCreatedAt() {

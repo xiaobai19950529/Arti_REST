@@ -27,8 +27,6 @@ angular.module('artirestApp')
                 $scope.searchData[artifact.id] = {};
                 $scope.searchData[artifact.id][attr.name] = data;
             }
-
-
         };
 
         $scope.resort = function() {
@@ -63,20 +61,22 @@ angular.module('artirestApp')
                 data: ans
 
             }).then(function(result){
-                    $scope.instancesByCondition = result.data;
-                    console.log(result.data);
-                    $scope.instances_query = result.data;
-                    console.log($scope.instances_query.length);
-                    $scope.totalItems = $scope.instances_query.length;
+                $scope.instancesByCondition = result.data;
+                console.log(result.data);
+                $scope.instances_query = result.data;
+                console.log($scope.instances_query.length);
+                $scope.totalItems = $scope.instances_query.length;
 
-                    $scope.instances_query = add_currentState($scope.instances_query);
+                $scope.instances_query = add_currentState($scope.instances_query);
+                console.log($scope.instances_query);
+            }, function(res){
 
-                }, function(res){
-
-                });
+            });
         };
 
         var add_currentState = function (instances) {
+            console.log("查询条件：");
+            console.log(instances);
             for(var i in instances){
                 var instance = instances[i];
                 var j = 0;
@@ -106,7 +106,6 @@ angular.module('artirestApp')
             ProcessModel.get({id: id}, function(result) {
                 $scope.processModel = result; //作用域仅在此函数
                 var artifactModel = $scope.processModel.artifacts[0];
-                console.log(artifactModel);
                 //$timeout($scope.showStatesFlowcharts(), 1000);
                 setTimeout(function(){
                     $scope.showStatesFlowcharts();
@@ -114,7 +113,7 @@ angular.module('artirestApp')
 
                 $scope.loadInstances(); //从后台加载实例
 
-                for(var id in $scope.searchData) {
+                for(var id in $scope.searchData) { //获得上次的查询条件
                     if(artifactModel.id === id){
                         for(var name in $scope.searchData[id]) {
                             for (var i = 0; i < artifactModel.attributes.length; i++) {
