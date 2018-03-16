@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span>Coordinator</span> {{vm.coordinator.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span>First Process Id</span></dt>
+        <dd>
+            <span>{{vm.coordinator.firstProcessId}}</span>
+        </dd>
+        <dt><span>First Process Attr</span></dt>
+        <dd>
+            <span>{{vm.coordinator.firstProcessAttr}}</span>
+        </dd>
+        <dt><span>Second Process Id</span></dt>
+        <dd>
+            <span>{{vm.coordinator.secondProcessId}}</span>
+        </dd>
+        <dt><span>Second Process Attr</span></dt>
+        <dd>
+            <span>{{vm.coordinator.secondProcessAttr}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button" ui-sref="coordinator-detail.edit({id:vm.coordinator.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down"> Edit</span>
+    </button>
+</div>

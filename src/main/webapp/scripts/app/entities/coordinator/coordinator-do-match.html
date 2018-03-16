@@ -1,0 +1,109 @@
+<div>
+    <div class="row">
+        <div class="col-md-5">
+            <h3>Artifact 1 attributes</h3>
+            <hr>
+        </div>
+        <div class="col-md-5 col-md-offset-2">
+            <h3>Artifact 2 attributes</h3>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row ">
+        <div class="col-md-5">
+            <table class="table table-hover table-mapped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Comment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="mapped in mappedAttrs">
+                    <td class="">{{mapped.attr1.name}}</td>
+                    <td class="">{{mapped.attr1.comment}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-2">
+            <table class="table table-hover table-mapped">
+                <thead>
+                <tr>
+                    <th>Link</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="mapped in mappedAttrs">
+                    <td class=""><-------></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-5">
+            <table class="table table-hover table-mapped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Comment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="mapped in mappedAttrs">
+                    <td class="">{{mapped.attr2.name}}</td>
+                    <td class="">{{mapped.attr2.comment}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row bg-white">
+        <div class="col-md-5" id="map-col-1">
+            <table class="table table-hover">
+                <tbody>
+                <tr ng-repeat="attr in artifact1.unmappedAttrs" ng-click="onSelectAttr($event, 1)">
+                    <td class="name">{{attr.name}}</td>
+                    <td class="comment">{{attr.comment}}</td>
+                    <td class="map-anchor"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-2" id="mappingPanel">
+
+        </div>
+
+        <div class="col-md-5" id="map-col-2">
+            <table class="table table-hover">
+                <tbody>
+                <tr ng-repeat="attr in artifact2.unmappedAttrs" ng-click="onSelectAttr($event, 2)">
+                    <td class="name">{{attr.name}}</td>
+                    <td class="comment">{{attr.comment}}</td>
+                    <td class="map-anchor"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row voffset5">
+        <button
+            type="button"
+            class="btn btn-primary"
+            ng-click="onConfirm()"
+            ng-disabled="selectedAttr1==null||selectedAttr2==null"
+        >
+            Confirm
+        </button>
+        <button
+            type="button"
+            class="btn btn-primary"
+            ng-click="saveCoordinator()"
+        >
+            Save
+        </button>
+    </div>
+</div>

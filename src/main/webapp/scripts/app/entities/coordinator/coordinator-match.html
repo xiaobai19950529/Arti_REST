@@ -1,0 +1,69 @@
+<div>
+    <h2>Creating coordinator</h2>
+    <jh-alert></jh-alert>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="table-responsive">
+                <h3>First process</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
+                            <th></th>
+                            <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="updatedAt"><span>UpdatedAt</span> <span class="glyphicon glyphicon-sort"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="process in processes track by process.id" ng-click="rowClicked(process, 1)">
+                            <td><span class="glyphicon glyphicon-ok" aria-hidden="true"
+                                      ng-if="process==firstSelectedProcess"></span></td>
+                            <td><span>{{process.id}}</span></td>
+                            <td>{{process.name}}</td>
+                            <td>{{process.updatedAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="table-responsive">
+                <h3>Second process</h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
+                        <th></th>
+                        <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                        <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                        <th jh-sort-by="updatedAt"><span>UpdatedAt</span> <span class="glyphicon glyphicon-sort"></span>
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="process in processes track by process.id" ng-click="rowClicked(process, 2)">
+                        <td><span class="glyphicon glyphicon-ok" aria-hidden="true"
+                                  ng-if="process==secondSelectedProcess"></span></td>
+                        <td><span>{{process.id}}</span></td>
+                        <td>{{process.name}}</td>
+                        <td>{{process.updatedAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button
+            type="button"
+            class="btn btn-primary"
+            ng-disabled="firstSelectedProcess==null || secondSelectedProcess==null"
+            ng-click="onConfirm()"
+        >
+            Confirm
+        </button>
+    </div>
+</div>

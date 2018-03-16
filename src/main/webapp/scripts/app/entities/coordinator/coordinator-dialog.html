@@ -1,0 +1,50 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myCoordinatorLabel">Create or edit a Coordinator</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.coordinator.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.coordinator.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_firstProcessId">First Process Id</label>
+            <input type="text" class="form-control" name="firstProcessId" id="field_firstProcessId"
+                    ng-model="vm.coordinator.firstProcessId"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_firstProcessAttr">First Process Attr</label>
+            <input type="text" class="form-control" name="firstProcessAttr" id="field_firstProcessAttr"
+                    ng-model="vm.coordinator.firstProcessAttr"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_secondProcessId">Second Process Id</label>
+            <input type="text" class="form-control" name="secondProcessId" id="field_secondProcessId"
+                    ng-model="vm.coordinator.secondProcessId"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_secondProcessAttr">Second Process Attr</label>
+            <input type="text" class="form-control" name="secondProcessAttr" id="field_secondProcessAttr"
+                    ng-model="vm.coordinator.secondProcessAttr"
+                    />
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

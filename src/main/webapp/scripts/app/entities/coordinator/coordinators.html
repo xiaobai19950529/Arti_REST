@@ -1,0 +1,70 @@
+<div>
+    <h2>Coordinators</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="coordinator.match" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span >
+                        Create new Coordinator
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="firstProcessId"><span>First Process Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="firstProcessName"><span>First Process Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="firstProcessAttr"><span>First Process Attr</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="secondProcessId"><span>Second Process Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="secondProcessName"><span>First Process Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="secondProcessAttr"><span>Second Process Attr</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="coordinator in coordinators track by coordinator.id">
+                    <td><a ui-sref="coordinator-detail({id:coordinator.id})">{{coordinator.id}}</a></td>
+                    <td>{{coordinator.firstProcessId}}</td>
+                    <td>{{coordinator.firstProcessName}}</td>
+                    <td>{{coordinator.firstProcessAttr}}</td>
+                    <td>{{coordinator.secondProcessId}}</td>
+                    <td>{{coordinator.secondProcessName}}</td>
+                    <td>{{coordinator.secondProcessAttr}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="coordinator-detail({id:coordinator.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="coordinator.edit({id:coordinator.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="coordinator.delete({id:coordinator.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

@@ -1,0 +1,136 @@
+<div>
+    <h2>Creating coordinator</h2>
+    <jh-alert></jh-alert>
+    <!--<div class="container">-->
+        <!--<div class="row">-->
+            <!--<div class="col-md-4">-->
+                <!--<button class="btn btn-primary" ui-sref="processModel.new">-->
+                    <!--<span class="glyphicon glyphicon-flash"></span> <span>Create a new ProcessModel</span>-->
+                <!--</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="col-md-6">
+
+        <!--<form>-->
+            <!--<div class="row">-->
+                <!--<div class="col">-->
+                    <!--<label>-->
+                        <!--Select a process:-->
+                    <!--</label>-->
+                <!--</div>-->
+                <!--<div class="col">-->
+                    <!--<label>-->
+                        <!--Select an artifact:-->
+                    <!--</label>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="row">-->
+                <!--<div class="col">-->
+                    <!--<select ng-model="CoordinatorMatchController.selectedProcess">-->
+                        <!--<option ng-repeat="process in processes"></option>-->
+                        <!--{{process.name}}-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<div class="col">-->
+                    <!--<select ng-model="CoordinatorMatchController.selectedArtifact" ng-repeat="selectedArtifact">-->
+                        <!--{{selectedArtifact.name}}-->
+                    <!--</select>-->
+                <!--</div>-->
+
+            <!--</div>-->
+        <!--</form>-->
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
+                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span>Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updatedAt"><span>UpdatedAt</span> <span class="glyphicon glyphicon-sort"></span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="process in processes track by process.id">
+                    <td><a ui-sref="process.detail({id:process.id})">{{process.id}}</a></td>
+                    <td>{{process.name}}</td>
+                    <td>{{process.updatedAt | date:'medium'}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr jh-sort="predicate">
+                    <th>Select a process:</th>
+                    <th>Select an artifact:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr jh-sort="predicate">
+                    <td>
+                        <select ng-model="CoordinatorMatchController.firstSelectedProcess" onchange="onchange()">
+                            <option ng-repeat="process in processes" value="{{process.name}}">{{process.name}}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select ng-model="CoordinatorMatchController.firstSelectedArtifact">
+                            <option ng-repeat="artifact in firstSelectedArtifacts" value="{{artifact.name}}">{{artifact.name}}</option>
+
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>{{CoordinatorMatchController.firstSelectedProcess}}</p>
+        <p>{{CoordinatorMatchController.firstSelectedArtifacts}}</p>
+
+        <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
+                <!--<th jh-sort-by="artifactName"><span>ArtifactName</span> <span class="glyphicon glyphicon-sort"></span></th>-->
+                <th jh-sort-by="attributeName"><span>AttributeName</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+
+            </tr>
+            <tr ng-repeat="artifact in firstArtifact">
+                <td ng-repeat="attribute in artifact.attributes"></td>
+                <!--<td ng-repeat-start="artifact in process.processModel.artifacts track by artifact.id">{{artifact.name}}</td>-->
+                <!--<td ng-repeat-end="attribute in process.processModel.artifacts.artifactModels.attributes">{{attribute.name}}</td>-->
+                <!--<td ng-repeat="attribute in process.processModel.artifact.artifactModels.attributes track by attribute.id">{{attribute.name}}</td>-->
+                <!--<td class="form-che"></td>-->
+                <!--<td ng-repeat="artifact in processes.artifacts">{{artifact.name}}</td>-->
+                <!--<td>-->
+                    <!--<button type="submit"-->
+                            <!--ui-sref="processModel.detail({id:processModel.id})"-->
+                            <!--class="btn btn-info btn-sm">-->
+                        <!--<span class="glyphicon glyphicon-eye-open"></span>&nbsp;<span> View</span>-->
+                    <!--</button>-->
+                    <!--<button type="submit"-->
+                            <!--ui-sref="processModel.edit({id:processModel.id})"-->
+                            <!--class="btn btn-primary btn-sm">-->
+                        <!--<span class="glyphicon glyphicon-pencil"></span>&nbsp;<span> Edit</span>-->
+                    <!--</button>-->
+                    <!--<button type="submit"-->
+                            <!--ui-sref="processModel.delete({id:processModel.id})"-->
+                            <!--class="btn btn-danger btn-sm">-->
+                        <!--<span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span> Delete</span>-->
+                    <!--</button>-->
+                <!--</td>-->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+        <div class="text-center">
+        <uib-pagination class="pagination-sm" total-items="totalItems" ng-model="page" ng-change="loadAll()"></uib-pagination>
+    </div>
+    </div>
+
+</div>

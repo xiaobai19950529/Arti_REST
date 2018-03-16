@@ -470,7 +470,7 @@ public class ProcessService {
 
     private boolean verifyAtomConditions(Process process, ServiceModel service, Set<BusinessRuleModel.Atom> atoms) {
         boolean satisfied = true;
-
+        //atom的value是指定的，就是上界或者下界，attribute即客户自己填的，不得逾越规则指定的线
         for (BusinessRuleModel.Atom atom : atoms) {
             Artifact a = findArtifactByName(process, atom.artifact);
 
@@ -587,7 +587,6 @@ public class ProcessService {
 
         if (!rules.isEmpty() && firstRuleSatisfied == null) {
             throw new Exception("PreConditions of business rules for service " + service.name + " are not satisfied.");
-
         }
         //processRepository.save(process);
         if (firstRuleSatisfied != null) {
@@ -605,7 +604,6 @@ public class ProcessService {
 
         if (firstRuleSatisfied != null) {
             doTransitions(process, firstRuleSatisfied, service);
-
         }
 
         // 后置条件没有计算, 问题:
@@ -632,24 +630,10 @@ public class ProcessService {
                         // comment here to enable cache
                         artifactRepository.save(artifact1);
 
-                        ArtifactModel artifactModel = new ArtifactModel();
-                        for(ArtifactModel artifact : process.getProcessModel().artifacts){
-                            artifactModel = artifact; //取最后一个
-                        }
-                        boolean flag = false;
-                        for(StateModel endState : artifactModel.endStates){
-                            System.out.println(endState.name + "==" + transition.toState);
-                            if(endState.name.equals(transition.toState)){
-                                process.setIsRunning(false);
-                                process.setEnded(true);
-                                flag = true;
-                                break;
-                            }
-                        }
-                        if(!flag) process.setIsRunning(true);
-                        processRepository.save(process);
                         //新增代码
+                        //查看是否为运行状态
                         //将数据库中 fromState实例数-1 , toState实例数+1
+                        RunningorEnded(process);
                         updateMetric(process,transition);
 
                         logService.stateTransition(process.getId(), artifact1.getId(), transition.fromState, transition.toState, service.name);
@@ -677,6 +661,18 @@ public class ProcessService {
         }
 
         return true;
+    }
+
+    public void RunningorEnded(Process process){
+        if(isProcessEnded(process)){
+            process.setIsRunning(false);
+            process.setEnded(true);
+        }
+        else{
+            process.setIsRunning(true);
+            process.setEnded(false);
+        }
+        processRepository.save(process);
     }
 
     /**
