@@ -129,6 +129,16 @@ public class ProcessCreateService {
 
         model.services.add(serviceModel4);
 
+        ServiceModel serviceModel5 = new ServiceModel(
+            "cancel",
+            host + "/loan/services/cancel",
+            ServiceModel.RestMethod.PUT,
+            "Loan",
+            "Loan");
+
+        serviceModel5.inputParams.add("approveStatus");
+        model.services.add(serviceModel5);
+
         // business rules
 
         // rule1
@@ -175,8 +185,8 @@ public class ProcessCreateService {
         BusinessRuleModel rule21 = new BusinessRuleModel();
         rule21.name = "rule2_canceled";
         rule21.action = new BusinessRuleModel.Action();
-        rule21.action.name = "loan approval";
-        rule21.action.service = "approve";
+        rule21.action.name = "loan cancel";
+        rule21.action.service = "cancel";
         rule21.action.transitions.add(new BusinessRuleModel.Transition("Loan", "applied", "canceled"));
 
         rule21.preConditions.add(new BusinessRuleModel.Atom("Loan", null, "applied", null, BusinessRuleModel.AtomType.INSTATE, null));
