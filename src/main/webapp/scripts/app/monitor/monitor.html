@@ -1,13 +1,13 @@
 <div>
     <div class="row monitor-sign">
         <div class="col-md-3 sign">
-            <div class="outer-circle">
+            <!--<div class="outer-circle">-->
                 <!--<div class="outer-circle-1" ng-style="{'animation-iteration-count': '{{ratio_instance}}'}"></div>-->
                 <!--<div class="outer-circle-2" ng-style="{'animation-iteration-count': '{{ratio_instance}}'}"></div>-->
                 <!--<div class="outer-circle-mask" ng-style="{'animation-iteration-count': '{{ratio_instance}}'}"></div>-->
 
                 <div class="instance">
-                    <div class="inner-circle text-center">
+                    <div >
                         <span>
                             {{instance}}
                         </span>
@@ -16,15 +16,15 @@
 
                 <!--<div class="left-gap">-->
                 <!--</div>-->
-            </div>
+            <!--</div>-->
 
-            <h5 class="text-center">
+            <h4 class="text-center">
                 Total Process Instances
-            </h5>
+            </h4>
         </div>
 
         <div class="col-md-3 sign">
-            <div class="outer-circle">
+            <!--<div class="outer-circle">-->
                 <!--<div class="outer-circle-1" ng-style="{'animation-iteration-count': '{{ratio_running}}'}"></div>-->
                 <!--<div class="outer-circle-2" ng-style="{'animation-iteration-count': '{{ratio_running}}'}"></div>-->
                 <!--<div class="outer-circle-mask" ng-style="{'animation-iteration-count': '{{ratio_running}}'}"></div>-->
@@ -36,15 +36,15 @@
                         </span>
                     </div>
                 </div>
-            </div>
+            <!--</div>-->
 
-            <h5 class="text-center">
+            <h4 class="text-center">
                 Running Process Instances
-            </h5>
+            </h4>
         </div>
 
         <div class="col-md-3 sign">
-            <div class="outer-circle">
+            <!--<div class="outer-circle">-->
                 <!--<div class="outer-circle-1" ng-style="{'animation-iteration-count': '{{ratio_pending}}'}"></div>-->
                 <!--<div class="outer-circle-2" ng-style="{'animation-iteration-count': '{{ratio_pending}}'}"></div>-->
                 <!--<div class="outer-circle-mask" ng-style="{'animation-iteration-count': '{{ratio_pending}}'}"></div>-->
@@ -58,15 +58,15 @@
                 </div>
                 <!--<div class="left-gap">-->
                 <!--</div>-->
-            </div>
+            <!--</div>-->
 
-            <h5 class="text-center">
+            <h4 class="text-center">
                 Pending Process Instances
-            </h5>
+            </h4>
         </div>
 
         <div class="col-md-3 sign">
-            <div class="outer-circle">
+            <!--<div class="outer-circle">-->
                 <!--<div class="outer-circle-1" ng-style="{'animation-iteration-count': 'ratio_ended'}"></div>-->
                 <!--<div class="outer-circle-2" ng-style="{'animation-iteration-count': 'ratio_ended'}"></div>-->
                 <!--<div class="outer-circle-mask" ng-style="{'animation-iteration-count': 'ratio_ended'}"></div>-->
@@ -80,16 +80,17 @@
                 </div>
                 <!--<div class="left-gap">-->
                 <!--</div>-->
-            </div>
+            <!--</div>-->
 
-            <h5 class="text-center">
+            <h4 class="text-center">
                 Closed Process Instances
-            </h5>
+            </h4>
         </div>
 
     </div>
+
     <h2>
-        <div class="monitor-sign">
+        <div >
             ProcessModels(
                 <span>
                     {{processModelNumber}}
@@ -97,6 +98,7 @@
             )
         </div>
     </h2>
+    <br>
     <jh-alert></jh-alert>
 
     <div class="table-responsive">
@@ -137,5 +139,5 @@
     </div>
 
 
-    <iframe src="http://10.141.209.192:3000/dashboard-solo/db/graphite-carbon-metrics?refresh=5s&panelId=2&orgId=1" width="450" height="200" frameborder="0"></iframe>
+    <!--<iframe src="http://10.141.209.192:3000/dashboard-solo/db/graphite-carbon-metrics?refresh=5s&panelId=2&orgId=1" width="450" height="200" frameborder="0"></iframe>-->
 </div>
