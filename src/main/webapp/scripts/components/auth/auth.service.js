@@ -34,13 +34,15 @@ angular.module('artirestApp')
                 return Principal.identity(force)
                     .then(function() {
                         var isAuthenticated = Principal.isAuthenticated();
-
+                        console.log("isAuth: + " + isAuthenticated);
+                        console.log($rootScope.toState.data);
                         // an authenticated user can't access to login and register pages
                         if (isAuthenticated && $rootScope.toState.parent === 'account' && ($rootScope.toState.name === 'login' || $rootScope.toState.name === 'register')) {
                             $state.go('home');
                         }
 
                         if ($rootScope.toState.data.authorities && $rootScope.toState.data.authorities.length > 0 && !Principal.hasAnyAuthority($rootScope.toState.data.authorities)) {
+
                             if (isAuthenticated) {
                                 // user is signed in but not authorized for desired state
                                 $state.go('accessdenied');

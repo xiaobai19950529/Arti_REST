@@ -7,15 +7,15 @@
             function ($stateProvider) {
                 $stateProvider
                     .state('coordinator', {
-                        parent: 'entity',
+                        parent: 'site',
                         url: '/coordinator',
                         data: {
-                            authorities: ['ROLE_USER'],
+                            authorities: ['ROLE_ADMIN'],
                             pageTitle: 'Coordinators'
                         },
                         views: {
                             'content@': {
-                                templateUrl: 'scripts/app/entities/coordinator/coordinators.html',
+                                templateUrl: 'scripts/app/coordinator/coordinators.html',
                                 controller: 'CoordinatorController'
                             }
                         },
@@ -23,7 +23,7 @@
                         }
                     })
                     .state('coordinator-detail', {
-                        parent: 'coordinator',
+                        parent: 'site',
                         url: '/coordinator/{id}',
                         data: {
                             authorities: ['ROLE_USER'],
@@ -31,7 +31,7 @@
                         },
                         views: {
                             'content@': {
-                                templateUrl: 'scripts/app/entities/coordinator/coordinator-detail.html',
+                                templateUrl: 'scripts/app/coordinator/coordinator-detail.html',
                                 controller: 'CoordinatorDetailController',
                                 controllerAs: 'vm'
                             }
@@ -58,7 +58,7 @@
                         },
                         onEnter: ['$stateParams', '$state', '$uibModal', function ($stateParams, $state, $uibModal) {
                             $uibModal.open({
-                                templateUrl: 'scripts/app/entities/coordinator/coordinator-dialog.html',
+                                templateUrl: 'scripts/app/coordinator/coordinator-dialog.html',
                                 controller: 'CoordinatorDialogController',
                                 controllerAs: 'vm',
                                 backdrop: 'static',
@@ -76,7 +76,7 @@
                         }]
                     })
                     .state('coordinator.match', {
-                        parent: 'entity',
+                        parent: 'site',
                         url: '/coordinator-match',
                         data: {
                             authorities: ['ROLE_USER'],
@@ -84,7 +84,7 @@
                         },
                         views: {
                             'content@': {
-                                templateUrl: 'scripts/app/entities/coordinator/coordinator-match.html',
+                                templateUrl: 'scripts/app/coordinator/coordinator-match.html',
                                 controller: 'CoordinatorMatchController'
                             }
                         },
@@ -92,7 +92,7 @@
                         }
                     })
                     .state('coordinator.doMatch', {
-                        parent: 'entity',
+                        parent: 'site',
                         url: '/coordinator-do-match/{id1}/{id2}',
                         data: {
                             authorities: ['ROLE_USER'],
@@ -100,7 +100,7 @@
                         },
                         views: {
                             'content@': {
-                                templateUrl: 'scripts/app/entities/coordinator/coordinator-do-match.html',
+                                templateUrl: 'scripts/app/coordinator/coordinator-do-match.html',
                                 controller: 'CoordinatorDoMatchController'
                             }
                         },
@@ -121,7 +121,7 @@
                         },
                         onEnter: ['$stateParams', '$state', '$uibModal', function ($stateParams, $state, $uibModal) {
                             $uibModal.open({
-                                templateUrl: 'scripts/app/entities/coordinator/coordinator-dialog.html',
+                                templateUrl: 'scripts/app/coordinator/coordinator-dialog.html',
                                 controller: 'CoordinatorDialogController',
                                 controllerAs: 'vm',
                                 backdrop: 'static',
@@ -146,7 +146,7 @@
                         },
                         onEnter: ['$stateParams', '$state', '$uibModal', function ($stateParams, $state, $uibModal) {
                             $uibModal.open({
-                                templateUrl: 'scripts/app/entities/coordinator/coordinator-delete-dialog.html',
+                                templateUrl: 'scripts/app/coordinator/coordinator-delete-dialog.html',
                                 controller: 'CoordinatorDeleteController',
                                 controllerAs: 'vm',
                                 size: 'md',
