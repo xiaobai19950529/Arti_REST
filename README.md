@@ -19,11 +19,11 @@ Before you can build this project, you must install and configure the following 
    
 - MongoDB: you can go to the redis official website or you can pull container from docker-hub
      
-     default port number: 6379
+           default port number: 27017
      
 - Redis: you can go to the redis official website or you can pull container from docker-hub
      
-     default port number: 6379
+           default port number: 6379
      
 - JDK
 
