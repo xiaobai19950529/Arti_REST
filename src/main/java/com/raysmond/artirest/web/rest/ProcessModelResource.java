@@ -173,7 +173,6 @@ public class ProcessModelResource {
         } else {
             processModel = processCreateService.createOrderProcessModel();
         }
-
         statisticModelService.add_modelnumber(processModel);
 
         return Optional.ofNullable(processModel)

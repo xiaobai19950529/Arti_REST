@@ -219,6 +219,7 @@ public class ProcessCreateService {
     }
 
     public ProcessModel createOrderProcessModel() {
+
         String host = "http://localhost:3000";
 
         // artifacts
@@ -320,7 +321,7 @@ public class ProcessCreateService {
 
         ProcessModel model1 = new ProcessModel();
         model1.setName("Order");
-
+        model1.setStatus(Status.ENACTED);
 
         model1.artifacts.add(artifact1);
         model1.artifacts.add(artifact2);
@@ -570,6 +571,7 @@ public class ProcessCreateService {
 
         model1.businessRules.add(rule10);
 
+        processModelService.modifyNameBeforeCreate(model1); //修改名称，确保不重复
         processModelRepository.save(model1);
 
         return model1;

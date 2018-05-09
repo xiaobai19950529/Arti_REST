@@ -423,7 +423,7 @@ public class ProcessService {
 
         Artifact artifact = newArtifactFromModel(artifactModel, process);
 
-        artifact.setCurrentState(artifactModel.getStartState().name);
+        artifact.setCurrentState(artifactModel.getStartState().name); //设置当前状态为初始状态
         artifact = artifactRepository.save(artifact);
 
         process.getArtifacts().add(artifact);
@@ -557,7 +557,8 @@ public class ProcessService {
 
         if (serviceModel.type == ServiceType.HUMAN_TASK) {
             return invokeHumanService(process, artifact, serviceModel);
-        } else if (serviceModel.type == ServiceType.INVOKE_SERVICE) {
+        } else { //非人工服务
+
             // TODO
         }
 
