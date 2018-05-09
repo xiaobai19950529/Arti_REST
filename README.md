@@ -17,7 +17,11 @@ Before you can build this project, you must install and configure the following 
    
    if you see the edition number, congratulations!
 - MongoDB
+     you can go to the mongo official website or you can pull container from docker-hub
+     default port number: 27017
 - Redis
+     you can go to the redis official website or you can pull container from docker-hub
+     default port number: 6379
 - JDK
 
 You can go to the website to download oracle-java:
@@ -42,7 +46,6 @@ We use [Grunt][] as our build system. Install the grunt command-line tool global
 Run the following command in a terminal:
 
 ```console
-export  PATH=$PATH:$Nodejs＿HOME/bin
 ./gradlew
 ```
 
