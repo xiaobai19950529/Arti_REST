@@ -4,16 +4,43 @@ This application was generated using JHipster, you can find documentation and he
 
 Before you can build this project, you must install and configure the following dependencies on your machine:
 
-1. [Node.js][]: We use Node to run a development web server and build the project.
+- [Node.js](https://nodejs.org/zh-cn/): We use Node to run a development web server and build the project.
    Depending on your system, you can install Node either from source or as a pre-packaged bundle.
+   go to the nodejs official website to download nodejs and add the path to bashrc
+   
+   ```console
+   sudo nano ~/.bashrc 
+   export PATH=$PATH:$Nodejs_HOME/bin  
+   source ~/.bashrc
+   node -v 
+   ```
+   
+   if you see the edition number, congratulations!
+   
+- MongoDB: you can go to the redis official website or you can pull container from docker-hub
+     
+           default port number: 27017
+     
+- Redis: you can go to the redis official website or you can pull container from docker-hub
+     
+           default port number: 6379
+     
+- JDK
 
-2. MongoDB
-3. Redis
+You can go to the website to download oracle-java:
+
+    http://topspeedsnail.com/ubuntu16-install-java-jdk/
+
+Then you have to set the experimental variable $JAVA_HOME and $PATH in ~/.bashrc
 
 After installing Node, you should be able to run the following command to install development tools (like
 [Bower][] and [BrowserSync][]). You will only need to run this command when dependencies change in package.json.
 
     npm install
+
+We have to install bower:
+
+    sudo npm install -g bower
 
 We use [Grunt][] as our build system. Install the grunt command-line tool globally with:
 
@@ -21,9 +48,9 @@ We use [Grunt][] as our build system. Install the grunt command-line tool global
 
 Run the following command in a terminal:
 
-    export  PATH=$PATH:$Nodejs＿HOME/bin
-   
-    ./gradlew
+```console
+./gradlew
+```
 
 Run the following commands in another separate terminal to create a blissful development experience where your browser
 auto-refreshes when files change on your hard drive.
